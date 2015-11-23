@@ -1,4 +1,4 @@
-package pl.edu.agh.iisg.to;
+package pl.edu.agh.iisg.to.budget;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
