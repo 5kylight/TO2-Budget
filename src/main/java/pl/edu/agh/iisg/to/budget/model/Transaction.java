@@ -1,37 +1,69 @@
 package pl.edu.agh.iisg.to.budget.model;
 
+import javafx.beans.property.*;
+
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 /**
  * Created by tom on 23.11.15.
  */
 public class Transaction {
-    private Category category;
-    private BigDecimal value;
-    private String name;
-    private Boolean isDone;
+    private ObjectProperty<Category> category;
+    private ObjectProperty<BigDecimal> value;
+    private StringProperty name;
+    private BooleanProperty isDone;
+    private ObjectProperty<LocalTime> localTime;
 
-    public Category getCategory() {
+
+    public Transaction() {
+    }
+
+    public BooleanProperty getIsDone() {
+        return isDone;
+    }
+
+    public Transaction setIsDone(Boolean isDone) {
+        this.isDone = new SimpleBooleanProperty(isDone);
+        return this;
+
+    }
+
+    public ObjectProperty<LocalTime> getLocalTime() {
+        return localTime;
+    }
+
+    public Transaction setLocalTime(LocalTime localTime) {
+        this.localTime = new SimpleObjectProperty<LocalTime>(localTime);
+        return this;
+    }
+
+    public ObjectProperty<Category> getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public Transaction setCategory(Category category) {
+        this.category = new SimpleObjectProperty<Category>(category);
+        return this;
     }
-    public BigDecimal getValue() {
+
+    public ObjectProperty<BigDecimal> getValue() {
         return value;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value = value;
+    public Transaction setValue(BigDecimal value) {
+        this.value = new SimpleObjectProperty<BigDecimal>(value);
+        return this;
     }
 
-    public String getName() {
+    public StringProperty getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Transaction setName(String name) {
+        this.name = new SimpleStringProperty(name);
+        return this;
     }
+
 
 }
