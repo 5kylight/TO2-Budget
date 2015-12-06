@@ -40,6 +40,8 @@ public class BudgetAppController {
             BudgetOverviewController controller = loader.getController();
             controller.setAppController(this);
             List<Transaction> data = new ArrayList<Transaction>();
+
+            addData(data);
             data.add(new Transaction()
                     .setCategory(new Category()
                             .setName("Zycie")
@@ -58,6 +60,20 @@ public class BudgetAppController {
         } catch (IOException e) {
             // don't do this in common apps
             e.printStackTrace();
+        }
+    }
+
+    private void addData(List<Transaction> data) {
+        for (int i = 0; i < 100; i++) {
+            data.add(new Transaction()
+                    .setCategory(new Category()
+                            .setName("Spożywcze")
+                            .setBudget(new Budget(new BigDecimal(30)))
+                            .setParent(new Category().setName("Zakupy")))
+                    .setLocalTime(LocalTime.now())
+                    .setName("Mleko")
+                    .setIsDone(new Boolean(true))
+                    .setValue(new BigDecimal(13)));
         }
     }
 

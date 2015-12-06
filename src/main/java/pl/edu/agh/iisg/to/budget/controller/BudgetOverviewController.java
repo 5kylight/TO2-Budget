@@ -1,10 +1,9 @@
 package pl.edu.agh.iisg.to.budget.controller;
 
-import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import pl.edu.agh.iisg.to.budget.model.Category;
 import pl.edu.agh.iisg.to.budget.model.Transaction;
 
@@ -18,6 +17,8 @@ public class BudgetOverviewController {
     private BudgetAppController appController;
     private List<Transaction> data;
 
+    @FXML
+    private Accordion accordion;
     @FXML
     private TableView<Transaction> transactionsTable;
 
@@ -50,21 +51,25 @@ public class BudgetOverviewController {
 
     @FXML
     private void initialize() {
+        TitledPane t1 = new TitledPane("Życie", new VBox(new TableView<>(), new TitledPane("Towarzyskie", new TableView<>())));
+        TitledPane t2 = new TitledPane("Zakupy", new VBox(new TableView<>(), new TitledPane("Jedzienie", new TableView<>()), new TitledPane("Codzienne", new TableView<>())));
+        TitledPane t3 = new TitledPane("Rachunki", new VBox(new TableView<>(), new TitledPane("Miesięczne", new TableView<>())));
 
-        transactionsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        accordion.getPanes().addAll(t1, t2, t3);
+//        transactionsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//
+//        categoryColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory());
+//        amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getValue());
+//        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent().getName());
+//        nameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getName());
+//        isDoneColumn.setCellValueFactory(dataValue -> dataValue.getValue().getIsDone());
+//
+//        deleteButton.disableProperty().bind(Bindings.isEmpty(transactionsTable.getSelectionModel().getSelectedItems()));
+//
+//        editButton.disableProperty()
+//                .bind(Bindings.size(transactionsTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1));
 
-        categoryColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory());
-        amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getValue());
-        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent().getName());
-        nameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getName());
-        isDoneColumn.setCellValueFactory(dataValue -> dataValue.getValue().getIsDone());
-
-        deleteButton.disableProperty().bind(Bindings.isEmpty(transactionsTable.getSelectionModel().getSelectedItems()));
-
-        editButton.disableProperty()
-                .bind(Bindings.size(transactionsTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1));
-
-        progressBar.setVisible(false);
+        progressBar.setVisible(true);
     }
 
     @FXML
@@ -88,6 +93,6 @@ public class BudgetOverviewController {
 
     public void setData(List<Transaction> data) {
         this.data = data;
-        transactionsTable.setItems(FXCollections.observableArrayList(data));
+//        transactionsTable.setItems(FXCollections.observableArrayList(data));
     }
 }
