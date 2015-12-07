@@ -33,10 +33,13 @@ public class BudgetAppController {
             // load layout from FXML file
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/BudgetOverviewPane.fxml"));
-            BorderPane rootLayout = (BorderPane) loader.load();
+            BorderPane rootLayout = loader.load();
 
             // set initial data into controller
             BudgetOverviewController controller = loader.getController();
+            controller.setGeneralBal(new BigDecimal(300));
+            controller.setGeneralBud(new BigDecimal(10));
+
             controller.setAppController(this);
             List<Budget> data = new ArrayList<>();
 

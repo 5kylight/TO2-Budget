@@ -17,8 +17,17 @@ public class BudgetOverviewController {
     private BudgetAppController appController;
     private List<Budget> data;
 
-//    @FXML
-//    private Accordion accordion;
+    public void setGeneralBud(BigDecimal generalBud) {
+        this.generalBud = generalBud;
+    }
+
+    public void setGeneralBal(BigDecimal generalBal) {
+        this.generalBal = generalBal;
+    }
+
+    private BigDecimal generalBud;
+    private BigDecimal generalBal;
+
 
     @FXML
     private TableView<Budget> budgetTable;
@@ -51,6 +60,12 @@ public class BudgetOverviewController {
     private ProgressBar progressBar;
 
     @FXML
+    private Label generalBalance;
+
+    @FXML
+    private Label generalBudget;
+
+    @FXML
     private void initialize() {
 
         // Main table
@@ -67,6 +82,8 @@ public class BudgetOverviewController {
         editButton.disableProperty()
                 .bind(Bindings.size(budgetTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1));
 
+//        generalBalance.setText(generalBal.toString());
+//        generalBudget.setText(generalBud.toString());
         // ProgressBar
         progressBar.setVisible(true);
     }
@@ -77,6 +94,8 @@ public class BudgetOverviewController {
         if (budget != null) {
             budgetTable.getItems().remove(budget);
         }
+        generalBalance.setText(generalBal.toString());
+        generalBudget.setText(generalBud.toString());
         budgetTable.getColumns().get(0).setVisible(false);
         budgetTable.getColumns().get(0).setVisible(true);
     }
@@ -87,6 +106,8 @@ public class BudgetOverviewController {
         if (budget != null) {
             appController.showBudgetEditDialog(budget);
         }
+        generalBalance.setText(generalBal.toString());
+        generalBudget.setText(generalBud.toString());
         budgetTable.getColumns().get(0).setVisible(false);
         budgetTable.getColumns().get(0).setVisible(true);
     }
@@ -96,7 +117,8 @@ public class BudgetOverviewController {
         Budget budget = new Budget(new BigDecimal(0));
         appController.showBudgetEditDialog(budget);
         budgetTable.getItems().add(budget);
-
+        generalBalance.setText(generalBal.toString());
+        generalBudget.setText(generalBud.toString());
         budgetTable.getColumns().get(0).setVisible(false);
         budgetTable.getColumns().get(0).setVisible(true);
     }
