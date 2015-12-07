@@ -75,7 +75,7 @@ public class BudgetOverviewController {
 
         amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getAmount());
         spentColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
-        balanceColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
+        balanceColumn.setCellValueFactory(dataValue -> dataValue.getValue().getBalance());
         parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent() == null ? null : dataValue.getValue().getCategory().get().getParent().getName());
         // Buttons
         deleteButton.disableProperty().bind(Bindings.isEmpty(budgetTable.getSelectionModel().getSelectedItems()));
