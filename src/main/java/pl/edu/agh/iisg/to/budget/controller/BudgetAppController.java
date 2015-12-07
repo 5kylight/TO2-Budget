@@ -3,6 +3,7 @@ package pl.edu.agh.iisg.to.budget.controller;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pl.edu.agh.iisg.to.budget.Main;
 import pl.edu.agh.iisg.to.budget.model.Budget;
@@ -68,11 +69,50 @@ public class BudgetAppController {
                             .setName("Spożywcze")
                             .setBudget(new Budget(new BigDecimal(30)))
                             .setParent(new Category().setName("Zakupy")))
-                    .setAmount(new BigDecimal(30))
-                    .setSpent(new BigDecimal(15))
+                    .setAmount(new BigDecimal(15))
                     .setBalance(new BigDecimal(15))
             );
         }
     }
+    public boolean showBudgetEditDialog(Budget budget) {
+        try {
+            // Load the fxml file and create a new stage for the dialog
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/BudgetEditDialog.fxml"));
+            BorderPane page = (BorderPane) loader.load();
+
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit budget");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(stage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the person into the controller.
+            BudgetEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setData(budget);
+            controller.setCategories(generateCategories());
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+            return controller.isApproved();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private List generateCategories() {
+        List<Category> categories = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            categories.add(new Category().setName("dupa"));
+        }
+        return categories;
+    }
+
+
 
 }

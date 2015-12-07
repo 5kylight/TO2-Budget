@@ -79,7 +79,10 @@ public class BudgetOverviewController {
 
     @FXML
     private void handleEditAction(ActionEvent event) {
-
+        Budget budget = budgetTable.getSelectionModel().getSelectedItem();
+        if (budget != null) {
+            appController.showBudgetEditDialog(budget);
+        }
     }
 
     @FXML
