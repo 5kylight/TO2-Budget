@@ -32,12 +32,11 @@ public class Category {
     }
 
     public Category getParent() {
-        return parent.get();
+        if (parent != null)
+            return parent.get();
+        return null;
     }
 
-    public ObjectProperty<Category> getParentProperty() {
-        return parent;
-    }
 
     public Category setParent(Category parent) {
         this.parent = new SimpleObjectProperty<>(parent);

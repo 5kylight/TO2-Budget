@@ -7,8 +7,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.edu.agh.iisg.to.budget.model.Budget;
 import pl.edu.agh.iisg.to.budget.model.Category;
+import pl.edu.agh.iisg.to.budget.model.CategoryConverter;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -19,6 +22,7 @@ import java.util.List;
  * Created by tom on 07.12.15.
  */
 public class BudgetEditDialogController {
+    private static final Logger logger = LogManager.getLogger(BudgetEditDialogController.class);
     private Budget budget;
 
     private ObservableList<Category> categories;
@@ -37,7 +41,7 @@ public class BudgetEditDialogController {
 
     @FXML
     public void initialize() {
-
+        categoryComboBox.setConverter(new CategoryConverter());
     }
 
 
@@ -47,11 +51,16 @@ public class BudgetEditDialogController {
 
     public void setData(Budget budget) {
         this.budget = budget;
+        if (budget.getCategory() != null)
+            this.categoryComboBox.getSelectionModel().select(budget.getCategory().get());
+//        this.categoryComboBox.getItems().add(budget.getCategory().get());
         updateControls();
+
     }
 
-    public void setCategories(List categories) {
-        this.categories = FXCollections.observableArrayList(categories);
+    public void setCategories(List<Category> categories) {
+        this.categories = FXCollections.observableArrayList();
+        this.categories.addAll(categories);
     }
 
     public boolean isApproved() {
@@ -61,6 +70,7 @@ public class BudgetEditDialogController {
     @FXML
     private void handleOkAction(ActionEvent event) {
         if (isInputValid()) {
+            logger.debug("Updating model");
             updateModel();
             approved = true;
             dialogStage.close();
@@ -84,34 +94,16 @@ public class BudgetEditDialogController {
 
         budget.setCategory(categoryComboBox.getValue());
         try {
-            budget.setSpent((BigDecimal) decimalFormatter.parse(amountTextField.getText()));
+            budget.setAmount((BigDecimal) decimalFormatter.parse(amountTextField.getText()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-//
-//        transaction.setDate(converter.fromString(dateTextField.getText()));
-//        transaction.setPayee(payeeTextField.getText());
-//        transaction.setCategory(new Category(categoryTextField.getText()));
-//        transaction.setMemo(memoTextField.getText());
-//
-//        try {
-//            transaction.setOutflow((BigDecimal) decimalFormatter.parse(outflowTextField.getText()));
-//            transaction.setInflow((BigDecimal) decimalFormatter.parse(inflowTextField.getText()));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     private void updateControls() {
-
+        logger.debug("Updating controls");
         amountTextField.setText(budget.getAmount().getValue().toString());
-        categoryComboBox.getItems().addAll(this.categories);
-//        payeeTextField.setText(transaction.getPayee());
-//        categoryTextField.setText(transaction.getCategory().getName());
-//        memoTextField.setText(transaction.getMemo());
-//        outflowTextField.setText(transaction.getOutflow().toString());
-//        inflowTextField.setText(transaction.getInflow().toString());
+        categoryComboBox.setItems(this.categories);
     }
 
 

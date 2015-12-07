@@ -41,16 +41,8 @@ public class BudgetAppController {
             List<Budget> data = new ArrayList<>();
 
             addData(data);
-//            data.add(new Transaction()
-//                    .setCategory(new Category()
-//                            .setName("Zycie")
-//                            .setBudget(new Budget(new BigDecimal(30)))
-//                            .setParent(new Category().setName("Dupa")))
-//                    .setLocalTime(LocalTime.now())
-//                    .setName("Mleko")
-//                    .setIsDone(new Boolean(true))
-//                    .setValue(new BigDecimal(13)));
             controller.setData(data);
+
             // add layout to a scene and show them all
             Scene scene = new Scene(rootLayout);
             stage.setScene(scene);
@@ -63,12 +55,12 @@ public class BudgetAppController {
     }
 
     private void addData(List<Budget> data) {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             data.add(new Budget()
                     .setCategory(new Category()
-                            .setName("Spożywcze")
+                            .setName("Spożywcze " + i)
                             .setBudget(new Budget(new BigDecimal(30)))
-                            .setParent(new Category().setName("Zakupy")))
+                            .setParent(new Category().setName("Zakupy " + i)))
                     .setAmount(new BigDecimal(15))
                     .setBalance(new BigDecimal(15))
             );
@@ -92,8 +84,8 @@ public class BudgetAppController {
             // Set the person into the controller.
             BudgetEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setData(budget);
             controller.setCategories(generateCategories());
+            controller.setData(budget);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
@@ -107,8 +99,8 @@ public class BudgetAppController {
 
     private List generateCategories() {
         List<Category> categories = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            categories.add(new Category().setName("dupa"));
+        for (int i = 0; i < 10; i++) {
+            categories.add(new Category().setName("dupa " + i));
         }
         return categories;
     }

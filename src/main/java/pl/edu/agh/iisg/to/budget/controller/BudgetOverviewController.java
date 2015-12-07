@@ -61,8 +61,7 @@ public class BudgetOverviewController {
         amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getAmount());
         spentColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
         balanceColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
-        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent().getName());
-
+        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent() == null ? null : dataValue.getValue().getCategory().get().getParent().getName());
         // Buttons
         deleteButton.disableProperty().bind(Bindings.isEmpty(budgetTable.getSelectionModel().getSelectedItems()));
         editButton.disableProperty()
@@ -74,7 +73,12 @@ public class BudgetOverviewController {
 
     @FXML
     private void handleDeleteAction(ActionEvent event) {
-
+        Budget budget = budgetTable.getSelectionModel().getSelectedItem();
+        if (budget != null) {
+            budgetTable.getItems().remove(budget);
+        }
+        budgetTable.getColumns().get(0).setVisible(false);
+        budgetTable.getColumns().get(0).setVisible(true);
     }
 
     @FXML
@@ -83,11 +87,18 @@ public class BudgetOverviewController {
         if (budget != null) {
             appController.showBudgetEditDialog(budget);
         }
+        budgetTable.getColumns().get(0).setVisible(false);
+        budgetTable.getColumns().get(0).setVisible(true);
     }
 
     @FXML
     private void handleAddAction(ActionEvent event) {
+        Budget budget = new Budget(new BigDecimal(0));
+        appController.showBudgetEditDialog(budget);
+        budgetTable.getItems().add(budget);
 
+        budgetTable.getColumns().get(0).setVisible(false);
+        budgetTable.getColumns().get(0).setVisible(true);
     }
 
     public void setAppController(BudgetAppController appController) {
