@@ -32,8 +32,4 @@ public class Main extends Application {
         logger.info("Main started");
         launch(args);
     }
-
-
-
-
 }
