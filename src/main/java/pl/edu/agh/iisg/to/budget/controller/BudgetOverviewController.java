@@ -1,11 +1,11 @@
 package pl.edu.agh.iisg.to.budget.controller;
 
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import pl.edu.agh.iisg.to.budget.model.Category;
-import pl.edu.agh.iisg.to.budget.model.Transaction;
+import pl.edu.agh.iisg.to.budget.model.Budget;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,27 +15,28 @@ import java.util.List;
  */
 public class BudgetOverviewController {
     private BudgetAppController appController;
-    private List<Transaction> data;
+    private List<Budget> data;
+
+//    @FXML
+//    private Accordion accordion;
 
     @FXML
-    private Accordion accordion;
-    @FXML
-    private TableView<Transaction> transactionsTable;
+    private TableView<Budget> budgetTable;
 
     @FXML
-    private TableColumn<Transaction, Category> categoryColumn;
+    private TableColumn<Budget, String> categoryNameColumn;
 
     @FXML
-    private TableColumn<Transaction, BigDecimal> amountColumn;
+    private TableColumn<Budget, BigDecimal> amountColumn;
 
     @FXML
-    private TableColumn<Transaction, String> parentNameColumn;
+    private TableColumn<Budget, BigDecimal> spentColumn;
 
     @FXML
-    private TableColumn<Transaction, String> nameColumn;
+    private TableColumn<Budget, BigDecimal> balanceColumn;
 
     @FXML
-    private TableColumn<Transaction, Boolean> isDoneColumn;
+    private TableColumn<Budget, String> parentNameColumn;
 
     @FXML
     private Button deleteButton;
@@ -51,24 +52,23 @@ public class BudgetOverviewController {
 
     @FXML
     private void initialize() {
-        TitledPane t1 = new TitledPane("Życie", new VBox(new TableView<>(), new TitledPane("Towarzyskie", new TableView<>())));
-        TitledPane t2 = new TitledPane("Zakupy", new VBox(new TableView<>(), new TitledPane("Jedzienie", new TableView<>()), new TitledPane("Codzienne", new TableView<>())));
-        TitledPane t3 = new TitledPane("Rachunki", new VBox(new TableView<>(), new TitledPane("Miesięczne", new TableView<>())));
 
-        accordion.getPanes().addAll(t1, t2, t3);
-//        transactionsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//
-//        categoryColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory());
-//        amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getValue());
-//        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent().getName());
-//        nameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getName());
-//        isDoneColumn.setCellValueFactory(dataValue -> dataValue.getValue().getIsDone());
-//
-//        deleteButton.disableProperty().bind(Bindings.isEmpty(transactionsTable.getSelectionModel().getSelectedItems()));
-//
-//        editButton.disableProperty()
-//                .bind(Bindings.size(transactionsTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1));
+        // Main table
+        budgetTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
+        categoryNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getName());
+
+        amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getAmount());
+        spentColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
+        balanceColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
+        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent().getName());
+
+        // Buttons
+        deleteButton.disableProperty().bind(Bindings.isEmpty(budgetTable.getSelectionModel().getSelectedItems()));
+        editButton.disableProperty()
+                .bind(Bindings.size(budgetTable.getSelectionModel().getSelectedItems()).isNotEqualTo(1));
+
+        // ProgressBar
         progressBar.setVisible(true);
     }
 
@@ -91,8 +91,8 @@ public class BudgetOverviewController {
         this.appController = appController;
     }
 
-    public void setData(List<Transaction> data) {
+    public void setData(List<Budget> data) {
         this.data = data;
-//        transactionsTable.setItems(FXCollections.observableArrayList(data));
+        budgetTable.setItems(FXCollections.observableArrayList(data));
     }
 }

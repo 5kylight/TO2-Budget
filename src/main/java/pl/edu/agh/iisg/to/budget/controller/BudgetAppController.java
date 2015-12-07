@@ -7,11 +7,9 @@ import javafx.stage.Stage;
 import pl.edu.agh.iisg.to.budget.Main;
 import pl.edu.agh.iisg.to.budget.model.Budget;
 import pl.edu.agh.iisg.to.budget.model.Category;
-import pl.edu.agh.iisg.to.budget.model.Transaction;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,18 +37,18 @@ public class BudgetAppController {
             // set initial data into controller
             BudgetOverviewController controller = loader.getController();
             controller.setAppController(this);
-            List<Transaction> data = new ArrayList<Transaction>();
+            List<Budget> data = new ArrayList<>();
 
             addData(data);
-            data.add(new Transaction()
-                    .setCategory(new Category()
-                            .setName("Zycie")
-                            .setBudget(new Budget(new BigDecimal(30)))
-                            .setParent(new Category().setName("Dupa")))
-                    .setLocalTime(LocalTime.now())
-                    .setName("Mleko")
-                    .setIsDone(new Boolean(true))
-                    .setValue(new BigDecimal(13)));
+//            data.add(new Transaction()
+//                    .setCategory(new Category()
+//                            .setName("Zycie")
+//                            .setBudget(new Budget(new BigDecimal(30)))
+//                            .setParent(new Category().setName("Dupa")))
+//                    .setLocalTime(LocalTime.now())
+//                    .setName("Mleko")
+//                    .setIsDone(new Boolean(true))
+//                    .setValue(new BigDecimal(13)));
             controller.setData(data);
             // add layout to a scene and show them all
             Scene scene = new Scene(rootLayout);
@@ -63,17 +61,17 @@ public class BudgetAppController {
         }
     }
 
-    private void addData(List<Transaction> data) {
+    private void addData(List<Budget> data) {
         for (int i = 0; i < 100; i++) {
-            data.add(new Transaction()
+            data.add(new Budget()
                     .setCategory(new Category()
                             .setName("Spożywcze")
                             .setBudget(new Budget(new BigDecimal(30)))
                             .setParent(new Category().setName("Zakupy")))
-                    .setLocalTime(LocalTime.now())
-                    .setName("Mleko")
-                    .setIsDone(new Boolean(true))
-                    .setValue(new BigDecimal(13)));
+                    .setAmount(new BigDecimal(30))
+                    .setSpent(new BigDecimal(15))
+                    .setBalance(new BigDecimal(15))
+            );
         }
     }
 
