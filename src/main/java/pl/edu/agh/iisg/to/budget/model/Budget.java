@@ -17,6 +17,7 @@ public class Budget {
     private ObjectProperty<BigDecimal> balance;
 
 
+
     public Budget(BigDecimal amount) {
         this.amount = new SimpleObjectProperty<>(amount);
         this.spent =  new SimpleObjectProperty<>(new BigDecimal(0));
@@ -68,32 +69,36 @@ public class Budget {
         return this.balance;
     }
 
-    /* dla danego bud¿etu dostaæ sumaryczny bilans - czyli jak jakiœ bilans ma podkategorie to ten bilans musi sumowaæ wszystkie podkategorie
+    public void setBalance(BigDecimal balance) {
+        this.balance.set(balance);
+    }
+
+    /* dla danego budï¿½etu dostaï¿½ sumaryczny bilans - czyli jak jakiï¿½ bilans ma podkategorie to ten bilans musi sumowaï¿½ wszystkie podkategorie
     Czyli taki bilans razem z podkategoriami Emotikon smile
 */
 
-    public BigDecimal getSummarizedBalance(){
-        return getTotalAmount().subtract(getTotalSpent());
-    }
-    public BigDecimal getTotalAmount(){
-        Category category = this.category.get();
-        BigDecimal sum = new BigDecimal(0).add(this.amount.get());
-        if(category.getSubCategories()!=null && !category.getSubCategories().isEmpty()){
-            for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
-                sum.add(categoryOP.get().getBudget().get().getAmount().get());
-            }
-        }
-        return sum;
-    }
-
-    public BigDecimal getTotalSpent(){
-        Category category = this.category.get();
-        BigDecimal sum = new BigDecimal(0).add(this.amount.get());
-        if(category.getSubCategories()!=null && !category.getSubCategories().isEmpty()){
-            for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
-                sum.add(categoryOP.get().getBudget().get().getSpent().get());
-            }
-        }
-        return sum;
-    }
+//    public BigDecimal getSummarizedBalance(){
+//        return getTotalAmount().subtract(getTotalSpent());
+//    }
+//    public BigDecimal getTotalAmount(){
+//        Category category = this.category.get();
+//        BigDecimal sum = new BigDecimal(0).add(this.amount.get());
+//        if(category.getSubCategories()!=null && !category.getSubCategories().isEmpty()){
+//            for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
+//                sum.add(categoryOP.get().getBudget().get().getAmount().get());
+//            }
+//        }
+//        return sum;
+//    }
+//
+//    public BigDecimal getTotalSpent(){
+//        Category category = this.category.get();
+//        BigDecimal sum = new BigDecimal(0).add(this.amount.get());
+//        if(category.getSubCategories()!= null && !category.getSubCategories().isEmpty()){
+//            for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
+//                sum.add(categoryOP.get().getBudget().get().getSpent().get());
+//            }
+//        }
+//        return sum;
+//    }
 }

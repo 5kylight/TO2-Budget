@@ -14,7 +14,7 @@ import java.util.List;
 public class Category {
     private StringProperty name;
     private ObjectProperty<Category> parentCategory;
-    private ObjectProperty<Budget> budget;
+//    private ObjectProperty<Budget> budget;
     private List<ObjectProperty<Category>> subCategories = new ArrayList<>();
 
     public List<ObjectProperty<Category>> getSubCategories() {
@@ -26,14 +26,14 @@ public class Category {
     }
 
 
-    public ObjectProperty<Budget> getBudget() {
-        return budget;
-    }
-
-    public Category setBudget(Budget budget) {
-        this.budget = new SimpleObjectProperty<Budget>(budget);
-        return this;
-    }
+//    public ObjectProperty<Budget> getBudget() {
+//        return budget;
+//    }
+//
+//    public Category setBudget(Budget budget) {
+//        this.budget = new SimpleObjectProperty<Budget>(budget);
+//        return this;
+//    }
 
     public StringProperty getName() {
         return name;

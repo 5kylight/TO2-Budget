@@ -11,9 +11,7 @@ import pl.edu.agh.iisg.to.budget.model.Category;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by tom on 24.11.15.
@@ -27,8 +25,8 @@ public class BudgetAppController {
     }
 
     private Budget generalBudget;
-    private Budget generalBalance;
 
+    private List<Category> allCategories;  // tymczasowo
 
     public void initRootLayout() {
         try {
@@ -41,13 +39,14 @@ public class BudgetAppController {
 
             // set initial data into controller
             BudgetOverviewController controller = loader.getController();
-            controller.setGeneralBal(generalBalance= new Budget(new BigDecimal(300)));
-            controller.setGeneralBud(generalBudget = new Budget(new BigDecimal(300)));
+            generalBudget = new Budget(new BigDecimal(0));
+            controller.setGeneralBud(generalBudget);
 
             controller.setAppController(this);
-            List<Budget> data = new ArrayList<>();
+            List<Budget> data;
 
-            addData(data);
+            data = getExpenses(addData());
+
             controller.setData(data);
 
             // add layout to a scene and show them all
@@ -61,19 +60,7 @@ public class BudgetAppController {
         }
     }
 
-    private void addData(List<Budget> data) {
-        for (int i = 0; i < 10; i++) {
-            data.add(new Budget()
-                    .setCategory(new Category()
-                            .setName("Spożywcze " + i)
-                            .setBudget(new Budget(new BigDecimal(30)))
-                            .setParent(new Category().setName("Zakupy " + i)))
-                    .setAmount(new BigDecimal(15))
-                    .setSpent(new BigDecimal(15 % (i + 1)))
-                    //.setBalance(new BigDecimal(15))
-            );
-        }
-    }
+
     public boolean showBudgetEditDialog(Budget budget) {
         try {
             // Load the fxml file and create a new stage for the dialog
@@ -92,7 +79,8 @@ public class BudgetAppController {
             // Set the person into the controller.
             BudgetEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setCategories(generateCategories());
+            allCategories = generateCategories();
+            controller.setCategories(allCategories);
             controller.setData(budget);
 
             // Show the dialog and wait until the user closes it
@@ -126,13 +114,22 @@ public class BudgetAppController {
             Budget budget = new Budget();
             budget.setCategory(entry.getKey());
             budget.setSpent(budget.getSpent().get().add(entry.getValue()));
-            budgets.add(budget);
-            generalBalance.setAmount(generalBalance.getAmount().get().add(budget.getAmount().get()));
-            generalBudget.setAmount(generalBudget.getAmount().get().add( budget.getAmount().get()));
+            generalBudget.setSpent(generalBudget.getSpent().get().add(budget.getSpent().get()));
 
+            budgets.add(budget);
         }
         return budgets;
     }
 
+
+    private Map<Category, BigDecimal> addData() {
+        Map<Category, BigDecimal> data = new HashMap<>();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            data.put(new Category().setName("Spożywcze " + i)
+                        .setParent(new Category().setName("Zakupy " + i)), new BigDecimal(random.nextInt(100)));
+        }
+        return data;
+    }
 
 }
