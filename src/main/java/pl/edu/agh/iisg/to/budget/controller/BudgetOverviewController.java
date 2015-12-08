@@ -17,16 +17,16 @@ public class BudgetOverviewController {
     private BudgetAppController appController;
     private List<Budget> data;
 
-    public void setGeneralBud(BigDecimal generalBud) {
+    public void setGeneralBud(Budget generalBud) {
         this.generalBud = generalBud;
     }
 
-    public void setGeneralBal(BigDecimal generalBal) {
+    public void setGeneralBal(Budget generalBal) {
         this.generalBal = generalBal;
     }
 
-    private BigDecimal generalBud;
-    private BigDecimal generalBal;
+    private Budget generalBud;
+    private Budget generalBal;
 
 
     @FXML
@@ -55,6 +55,9 @@ public class BudgetOverviewController {
 
     @FXML
     private Button addButton;
+
+    @FXML
+    private Button refreshButton;
 
     @FXML
     private ProgressBar progressBar;
@@ -89,15 +92,18 @@ public class BudgetOverviewController {
     }
 
     @FXML
+    private void handleRefreshAction(ActionEvent event) {
+        updateControls();
+    }
+
+
+    @FXML
     private void handleDeleteAction(ActionEvent event) {
         Budget budget = budgetTable.getSelectionModel().getSelectedItem();
         if (budget != null) {
             budgetTable.getItems().remove(budget);
         }
-        generalBalance.setText(generalBal.toString());
-        generalBudget.setText(generalBud.toString());
-        budgetTable.getColumns().get(0).setVisible(false);
-        budgetTable.getColumns().get(0).setVisible(true);
+        updateControls();
     }
 
     @FXML
@@ -106,21 +112,15 @@ public class BudgetOverviewController {
         if (budget != null) {
             appController.showBudgetEditDialog(budget);
         }
-        generalBalance.setText(generalBal.toString());
-        generalBudget.setText(generalBud.toString());
-        budgetTable.getColumns().get(0).setVisible(false);
-        budgetTable.getColumns().get(0).setVisible(true);
+        updateControls();
     }
 
     @FXML
     private void handleAddAction(ActionEvent event) {
         Budget budget = new Budget(new BigDecimal(0));
-        appController.showBudgetEditDialog(budget);
-        budgetTable.getItems().add(budget);
-        generalBalance.setText(generalBal.toString());
-        generalBudget.setText(generalBud.toString());
-        budgetTable.getColumns().get(0).setVisible(false);
-        budgetTable.getColumns().get(0).setVisible(true);
+        if (appController.showBudgetEditDialog(budget))
+            budgetTable.getItems().add(budget);
+        updateControls();
     }
 
     public void setAppController(BudgetAppController appController) {
@@ -131,4 +131,12 @@ public class BudgetOverviewController {
         this.data = data;
         budgetTable.setItems(FXCollections.observableArrayList(data));
     }
+
+    public void updateControls() {
+        generalBalance.setText(generalBal.getAmount().toString());
+        generalBudget.setText(generalBud.getAmount().toString());
+        budgetTable.getColumns().get(0).setVisible(false);
+        budgetTable.getColumns().get(0).setVisible(true);
+    }
+
 }

@@ -1,3 +1,1 @@
-2015-12-07 22:38:19,809 INFO  [main] budget.Main (Main.java:32) - Main started
-2015-12-07 22:38:25,507 DEBUG [JavaFX Application Thread] controller.BudgetEditDialogController (BudgetEditDialogController.java:104) - Updating controls
-2015-12-07 22:38:27,716 DEBUG [JavaFX Application Thread] controller.BudgetEditDialogController (BudgetEditDialogController.java:73) - Updating model
+2015-12-08 18:25:59,071 INFO  [main] budget.Main (Main.java:32) - Main started

@@ -26,6 +26,9 @@ public class BudgetAppController {
         this.stage = stage;
     }
 
+    private Budget generalBudget;
+    private Budget generalBalance;
+
 
     public void initRootLayout() {
         try {
@@ -38,8 +41,8 @@ public class BudgetAppController {
 
             // set initial data into controller
             BudgetOverviewController controller = loader.getController();
-            controller.setGeneralBal(new BigDecimal(300));
-            controller.setGeneralBud(new BigDecimal(10));
+            controller.setGeneralBal(generalBalance= new Budget(new BigDecimal(300)));
+            controller.setGeneralBud(generalBudget = new Budget(new BigDecimal(300)));
 
             controller.setAppController(this);
             List<Budget> data = new ArrayList<>();
@@ -66,7 +69,7 @@ public class BudgetAppController {
                             .setBudget(new Budget(new BigDecimal(30)))
                             .setParent(new Category().setName("Zakupy " + i)))
                     .setAmount(new BigDecimal(15))
-                    .setSpent(new BigDecimal(15%(i+1)))
+                    .setSpent(new BigDecimal(15 % (i + 1)))
                     //.setBalance(new BigDecimal(15))
             );
         }
@@ -124,6 +127,9 @@ public class BudgetAppController {
             budget.setCategory(entry.getKey());
             budget.setSpent(budget.getSpent().get().add(entry.getValue()));
             budgets.add(budget);
+            generalBalance.setAmount(generalBalance.getAmount().get().add(budget.getAmount().get()));
+            generalBudget.setAmount(generalBudget.getAmount().get().add( budget.getAmount().get()));
+
         }
         return budgets;
     }
