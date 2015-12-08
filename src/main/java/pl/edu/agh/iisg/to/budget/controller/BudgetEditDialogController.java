@@ -107,6 +107,9 @@ public class BudgetEditDialogController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        budget.getCategory().get().setParent(parentCategoryComboBox.getValue());
+
+
     }
 
     private void updateControls() {
