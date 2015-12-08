@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by tom on 24.11.15.
@@ -65,7 +66,8 @@ public class BudgetAppController {
                             .setBudget(new Budget(new BigDecimal(30)))
                             .setParent(new Category().setName("Zakupy " + i)))
                     .setAmount(new BigDecimal(15))
-                    .setBalance(new BigDecimal(15))
+                    .setSpent(new BigDecimal(15%(i+1)))
+                    //.setBalance(new BigDecimal(15))
             );
         }
     }
@@ -107,7 +109,24 @@ public class BudgetAppController {
         }
         return categories;
     }
+    /*Później w BudgetAppControlerze chciałbym taką metodę która dostaje na wejściu mapę categorii i ile zostało wydane lub przypływu a zwraca listę budzetów
+    Wejściem dla niej będzie to co dostaniemy od wydatków i przerobi to na nasze budżety
+*/
 
+    public Budget setWholeBudget(BigDecimal amount){
+        return new Budget(amount);
+    }
+
+    public List<Budget> getExpenses(Map<Category, BigDecimal> categorisedExpenses){
+        List<Budget> budgets = new ArrayList<>();
+        for (Map.Entry<Category, BigDecimal> entry : categorisedExpenses.entrySet()) {
+            Budget budget = new Budget();
+            budget.setCategory(entry.getKey());
+            budget.setSpent(budget.getSpent().get().add(entry.getValue()));
+            budgets.add(budget);
+        }
+        return budgets;
+    }
 
 
 }
