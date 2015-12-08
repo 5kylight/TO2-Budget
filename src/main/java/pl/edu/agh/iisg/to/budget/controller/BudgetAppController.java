@@ -127,7 +127,10 @@ public class BudgetAppController {
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             Category category = allCategories.get(random.nextInt(allCategories.size() - 1));
-            category.setParent(new Category().setName("Zakupy " + i));
+            Category parentCategory = allCategories.get(random.nextInt(allCategories.size() - 1));
+
+            category.setParent(parentCategory);
+            parentCategory.addSubCategory(category);
             data.put(category, new BigDecimal(random.nextInt(100)));
         }
         return data;

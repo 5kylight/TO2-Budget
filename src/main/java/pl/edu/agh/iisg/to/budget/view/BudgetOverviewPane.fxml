@@ -17,8 +17,8 @@
             <content>
                 <TableView fx:id="budgetTable" prefHeight="500.0" prefWidth="650.0" BorderPane.alignment="CENTER">
                     <columns>
-                        <TableColumn fx:id="categoryNameColumn" prefWidth="75.0" text="Category Name" />
-                        <TableColumn fx:id="parentNameColumn" prefWidth="200.0" text="Parent Category Name" />
+                        <TableColumn fx:id="categoryNameColumn" prefWidth="75.0" text="Category" />
+                        <TableColumn fx:id="parentNameColumn" prefWidth="200.0" text="Parent Category" />
                         <TableColumn fx:id="spentColumn" prefWidth="75.0" text="Spent" />
                         <TableColumn fx:id="amountColumn" prefWidth="75.0" text="Planned" />
                         <TableColumn fx:id="balanceColumn" prefWidth="75.0" text="Balance" />

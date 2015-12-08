@@ -67,6 +67,9 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="javafx.fxml.FXML" />
+    </list>
   </component>
   <component name="IdProvider" IDEtalkID="05DBF3F203537C00D2E9C4846D18C4E2" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
