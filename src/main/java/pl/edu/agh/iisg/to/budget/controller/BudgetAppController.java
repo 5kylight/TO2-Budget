@@ -39,6 +39,8 @@ public class BudgetAppController {
 
             // set initial data into controller
             BudgetOverviewController controller = loader.getController();
+
+            allCategories = generateCategories();
             generalBudget = new Budget(new BigDecimal(0));
             controller.setGeneralBud(generalBudget);
 
@@ -46,7 +48,6 @@ public class BudgetAppController {
             List<Budget> data;
 
             data = getExpenses(addData());
-
             controller.setData(data);
 
             // add layout to a scene and show them all
@@ -76,7 +77,6 @@ public class BudgetAppController {
             Scene scene = new Scene(page);
             dialogStage.setScene(scene);
 
-            // Set the person into the controller.
             BudgetEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             allCategories = generateCategories();
@@ -96,7 +96,7 @@ public class BudgetAppController {
     private List generateCategories() {
         List<Category> categories = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            categories.add(new Category().setName("dupa " + i));
+            categories.add(new Category().setName("Category " + i));
         }
         return categories;
     }
@@ -126,8 +126,9 @@ public class BudgetAppController {
         Map<Category, BigDecimal> data = new HashMap<>();
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
-            data.put(new Category().setName("Spożywcze " + i)
-                        .setParent(new Category().setName("Zakupy " + i)), new BigDecimal(random.nextInt(100)));
+            Category category = allCategories.get(random.nextInt(allCategories.size() - 1));
+            category.setParent(new Category().setName("Zakupy " + i));
+            data.put(category, new BigDecimal(random.nextInt(100)));
         }
         return data;
     }

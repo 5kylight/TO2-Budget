@@ -31,6 +31,9 @@ public class BudgetEditDialogController {
     private ComboBox<Category> categoryComboBox;
 
     @FXML
+    private ComboBox<Category> parentCategoryComboBox;
+
+    @FXML
     private TextField amountTextField;
 
 
@@ -41,7 +44,9 @@ public class BudgetEditDialogController {
 
     @FXML
     public void initialize() {
+
         categoryComboBox.setConverter(new CategoryConverter());
+        parentCategoryComboBox.setConverter(new CategoryConverter());
     }
 
 
@@ -51,11 +56,15 @@ public class BudgetEditDialogController {
 
     public void setData(Budget budget) {
         this.budget = budget;
-        if (budget.getCategory() != null)
+        if (budget.getCategory() != null) {
             this.categoryComboBox.getSelectionModel().select(budget.getCategory().get());
-//        this.categoryComboBox.getItems().add(budget.getCategory().get());
-        updateControls();
 
+            if (budget.getCategory().get().getParent() != null)
+                this.parentCategoryComboBox.getSelectionModel().select(budget.getCategory().get().getParent());
+
+        }
+
+        updateControls();
     }
 
     public void setCategories(List<Category> categories) {
@@ -70,7 +79,6 @@ public class BudgetEditDialogController {
     @FXML
     private void handleOkAction(ActionEvent event) {
         if (isInputValid()) {
-            logger.debug("Updating model");
             updateModel();
             approved = true;
             dialogStage.close();
@@ -89,6 +97,7 @@ public class BudgetEditDialogController {
     }
 
     private void updateModel() {
+        logger.debug("Updating model");
         DecimalFormat decimalFormatter = new DecimalFormat();
         decimalFormatter.setParseBigDecimal(true);
 
@@ -104,6 +113,7 @@ public class BudgetEditDialogController {
         logger.debug("Updating controls");
         amountTextField.setText(budget.getAmount().getValue().toString());
         categoryComboBox.setItems(this.categories);
+        parentCategoryComboBox.setItems(this.categories);
     }
 
 
