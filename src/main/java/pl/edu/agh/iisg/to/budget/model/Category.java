@@ -24,10 +24,11 @@ public class Category {
         this.subCategories.addAll(subCategories);
     }
 
-    public void addSubCategory(Category category) {
-        this.subCategories.add(new SimpleObjectProperty<>(category));
+    public void addSubCategories(Category ... categories) {
+        for(Category category : categories) {
+            this.subCategories.add(new SimpleObjectProperty<>(category));
+        }
     }
-
 
     public StringProperty getName() {
         return name;
@@ -48,6 +49,12 @@ public class Category {
     public Category setParent(Category parent) {
         this.parentCategory = new SimpleObjectProperty<>(parent);
         return this;
+    }
+
+    public boolean isParent(){
+        if(this.getParent()==null)
+            return true;
+        return false;
     }
 
     @Override

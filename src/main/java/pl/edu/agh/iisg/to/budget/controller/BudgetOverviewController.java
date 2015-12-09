@@ -93,6 +93,8 @@ public class BudgetOverviewController {
     private void handleDeleteAction(ActionEvent event) {
         Budget budget = budgetTable.getSelectionModel().getSelectedItem();
         if (budget != null) {
+            generalBud.setAmount(generalBud.getAmount().get().subtract(budget.getAmount().get())); //TODO:?? problem described at the end
+            generalBud.setSpent(generalBud.getSpent().get().subtract(budget.getSpent().get()));
             budgetTable.getItems().remove(budget);
         }
         updateControls();
@@ -103,7 +105,7 @@ public class BudgetOverviewController {
         Budget budget = budgetTable.getSelectionModel().getSelectedItem();
         if (budget != null) {
             appController.showBudgetEditDialog(budget);
-            generalBud.setAmount(generalBud.getAmount().get().add(budget.getAmount().get()));    // bardzo brzydko
+            generalBud.setAmount(generalBud.getAmount().get().add(budget.getAmount().get()));    // bardzo brzydko TODO: a tak¿e nie dzia³a poprawnie tak przy okazji...
         }
         updateControls();
     }
@@ -134,5 +136,12 @@ public class BudgetOverviewController {
         budgetTable.getColumns().get(0).setVisible(false);
         budgetTable.getColumns().get(0).setVisible(true);
     }
+
+/*
+    TODO:
+        while handling edit action 100->120 - general increase 120 (should 20)(and it should not even increase for me!!
+                                                                                AI: -we should keep total planned by user amount elswhere
+                                                                                    -we should not subtract amount from subcategory->send it to parentcategory!(better for me))
+*/
 
 }

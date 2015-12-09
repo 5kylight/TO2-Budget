@@ -10,12 +10,10 @@ import java.math.BigDecimal;
  */
 public class Budget {
 
-    private ObjectProperty<Category> category;//czy realnie tego potrzebujemy?
-
+    private ObjectProperty<Category> category;
     private ObjectProperty<BigDecimal> amount;
     private ObjectProperty<BigDecimal> spent;
     private ObjectProperty<BigDecimal> balance;
-
 
 
     public Budget(BigDecimal amount) {

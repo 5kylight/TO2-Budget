@@ -108,7 +108,7 @@ public class BudgetEditDialogController {
             e.printStackTrace();
         }
         Category parent = parentCategoryComboBox.getValue();
-        parent.addSubCategory(budget.getCategory().get());
+        parent.addSubCategories(budget.getCategory().get());
         budget.getCategory().get().setParent(parent);
     }
 
