@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class CategoryConverter extends StringConverter {
 
-    private Map<String, Category> categoryMap= new HashMap<>();
+    private Map<String, Category> categoryMap = new HashMap<>();
 
     @Override
     public String toString(Object object) {

@@ -98,8 +98,8 @@ public class BudgetAppController {
 
             BudgetEditDialogController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            allCategories = generateCategories();
             controller.setCategories(allCategories);
+            controller.setParentCategories(parentCategories);
             controller.setData(budget);
 
             // Show the dialog and wait until the user closes it

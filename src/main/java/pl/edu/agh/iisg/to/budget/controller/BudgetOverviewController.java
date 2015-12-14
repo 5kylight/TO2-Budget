@@ -157,7 +157,16 @@ public class BudgetOverviewController {
     private void handleAddAction(ActionEvent event) {
         Budget budget = new Budget(new BigDecimal(0));
         if (appController.showBudgetEditDialog(budget)) {
-            planTable.getItems().add(budget);
+            // check if this is parent or new parent or new cateogry with new parent etc
+
+            /* If this is parent category*/
+            if (budget.getCategory().get().getParent() == null) {
+                // TODO /* Chceck if this is new c*/
+                parentPlanTable.getItems().addAll(budget);
+            } else {
+                planTable.getItems().add(budget);
+                parentPlanTable.getItems().add(appController.getBudgetForCategory(budget.getCategory().get().getParent()));
+            }
             generalBud.setPlanned(generalBud.getPlanned().get().add(budget.getPlanned().get()));    // bardzo brzydko
         }
 

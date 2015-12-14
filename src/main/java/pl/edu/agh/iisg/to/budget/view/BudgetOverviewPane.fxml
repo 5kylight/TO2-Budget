@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.*?>
 <BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.iisg.to.budget.controller.BudgetOverviewController">
     <center>
-        <!--<ScrollPane prefHeight="520.0" prefWidth="650.0">-->
             <SplitPane orientation="VERTICAL">
                 <TitledPane text="Parent Categories Plan">
                     <TableView fx:id="parentPlanTable" prefHeight="260.0" prefWidth="650.0" BorderPane.alignment="CENTER">
@@ -37,7 +36,6 @@
                     </TableView>
                 </TitledPane>
             </SplitPane>
-        <!--</ScrollPane>-->
     </center>
 
     <right>
@@ -82,11 +80,6 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </VBox.margin>
                 </Button>
-
-
-            <!--<BorderPane.margin>-->
-            <!--<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />-->
-            <!--</BorderPane.margin>-->
         </VBox>
     </right>
 
@@ -125,8 +118,6 @@
                             </GridPane.margin>
                         </Label>
                 </GridPane>
-          <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />-->
-
       </TitledPane>
    </bottom>
 </BorderPane>

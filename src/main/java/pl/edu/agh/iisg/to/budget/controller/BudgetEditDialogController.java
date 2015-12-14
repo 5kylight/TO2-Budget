@@ -26,7 +26,7 @@ public class BudgetEditDialogController {
     private Budget budget;
 
     private ObservableList<Category> categories;
-
+    private ObservableList<Category> parentCategories;
     @FXML
     private ComboBox<Category> categoryComboBox;
 
@@ -34,7 +34,7 @@ public class BudgetEditDialogController {
     private ComboBox<Category> parentCategoryComboBox;
 
     @FXML
-    private TextField amountTextField;
+    private TextField planTextField;
 
 
     private Stage dialogStage;
@@ -42,14 +42,13 @@ public class BudgetEditDialogController {
     private boolean approved;
 
 
+
     @FXML
     public void initialize() {
-
         categoryComboBox.setConverter(new CategoryConverter());
-        categoryComboBox.setEditable(true);
+//        categoryComboBox.setEditable(true);
         parentCategoryComboBox.setConverter(new CategoryConverter());
-        parentCategoryComboBox.setEditable(true);
-
+//        parentCategoryComboBox.setEditable(true);
     }
 
 
@@ -64,7 +63,6 @@ public class BudgetEditDialogController {
 
             if (budget.getCategory().get().getParent() != null)
                 this.parentCategoryComboBox.getSelectionModel().select(budget.getCategory().get().getParent());
-
         }
 
         updateControls();
@@ -73,6 +71,10 @@ public class BudgetEditDialogController {
     public void setCategories(List<Category> categories) {
         this.categories = FXCollections.observableArrayList();
         this.categories.addAll(categories);
+    }
+    public void setParentCategories(List<Category> parentCategories) {
+        this.parentCategories = FXCollections.observableArrayList();
+        this.parentCategories.addAll(parentCategories);
     }
 
     public boolean isApproved() {
@@ -104,23 +106,34 @@ public class BudgetEditDialogController {
         DecimalFormat decimalFormatter = new DecimalFormat();
         decimalFormatter.setParseBigDecimal(true);
 
+        if (categoryComboBox.getValue() == null )
+            logger.error("You must specify category");
+
         budget.setCategory(categoryComboBox.getValue());
         try {
-            budget.setPlanned((BigDecimal) decimalFormatter.parse(amountTextField.getText()));
+            budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
         Category parent = parentCategoryComboBox.getValue();
-        parent.addSubCategories(budget.getCategory().get());
-        budget.getCategory().get().setParent(parent);
+        if (parent != null) {
+            parent.addSubCategories(budget.getCategory().get());
+            budget.getCategory().get().setParent(parent);
+        } else
+            logger.debug("Added parent category");
     }
 
     private void updateControls() {
         logger.debug("Updating controls");
-        amountTextField.setText(budget.getPlanned().getValue().toString());
+        planTextField.setText(budget.getPlanned().getValue().toString());
         categoryComboBox.setItems(this.categories);
-        parentCategoryComboBox.setItems(this.categories);
+        parentCategoryComboBox.setItems(this.parentCategories);
     }
 
 
+
+
+    public List<Category> getParentCategories() {
+        return parentCategories;
+    }
 }
