@@ -14,11 +14,9 @@
                     <TableView fx:id="parentPlanTable" prefHeight="260.0" prefWidth="650.0" BorderPane.alignment="CENTER">
                         <columns>
                             <TableColumn fx:id="parentCategoryName" prefWidth="75.0" text="Category" />
-                            <!--<TableColumn fx:id="parentNameColumn" prefWidth="200.0" text="Parent Category" />-->
+                            <TableColumn fx:id="parentPlannedColumn" prefWidth="75.0" text="Planned" />
                             <TableColumn fx:id="parentSpentColumn" prefWidth="75.0" text="Spent" />
-                            <TableColumn fx:id="parentAmountColumn" prefWidth="75.0" text="Planned" />
                             <TableColumn fx:id="parentBalanceColumn" prefWidth="75.0" text="Balance" />
-                            <!--<TableColumn fx:id="\" prefWidth="75.0" text="Inflow" />-->
                         </columns>
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -29,11 +27,9 @@
                     <TableView fx:id="planTable" prefHeight="260.0" prefWidth="650.0" BorderPane.alignment="CENTER">
                         <columns>
                             <TableColumn fx:id="categoryNameColumn" prefWidth="75.0" text="Category" />
-                            <!--<TableColumn fx:id="parentNameColumn" prefWidth="200.0" text="Parent Category" />-->
+                            <TableColumn fx:id="plannedColumn" prefWidth="75.0" text="Planned" />
                             <TableColumn fx:id="spentColumn" prefWidth="75.0" text="Spent" />
-                            <TableColumn fx:id="amountColumn" prefWidth="75.0" text="Planned" />
                             <TableColumn fx:id="balanceColumn" prefWidth="75.0" text="Balance" />
-                            <!--<TableColumn fx:id="\" prefWidth="75.0" text="Inflow" />-->
                         </columns>
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

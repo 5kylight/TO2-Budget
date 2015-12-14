@@ -36,7 +36,7 @@ public class BudgetOverviewController {
     private TableColumn<Budget, BigDecimal> parentSpentColumn;
 
     @FXML
-    private TableColumn<Budget, BigDecimal> parentAmountColumn;
+    private TableColumn<Budget, BigDecimal> parentPlannedColumn;
 
     @FXML
     private TableColumn<Budget, BigDecimal> parentBalanceColumn;
@@ -49,7 +49,7 @@ public class BudgetOverviewController {
     private TableColumn<Budget, String> categoryNameColumn;
 
     @FXML
-    private TableColumn<Budget, BigDecimal> amountColumn;
+    private TableColumn<Budget, BigDecimal> plannedColumn;
 
     @FXML
     private TableColumn<Budget, BigDecimal> spentColumn;
@@ -90,7 +90,7 @@ public class BudgetOverviewController {
         // Parent Planned
         parentPlanTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         parentCategoryName.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getName());
-        parentAmountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getAmount());
+        parentPlannedColumn.setCellValueFactory(dataValue -> dataValue.getValue().getPlanned());
         parentSpentColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
         parentBalanceColumn.setCellValueFactory(dataValue -> dataValue.getValue().getBalance());
 
@@ -110,10 +110,9 @@ public class BudgetOverviewController {
         planTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         categoryNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getName());
-        amountColumn.setCellValueFactory(dataValue -> dataValue.getValue().getAmount());
+        plannedColumn.setCellValueFactory(dataValue -> dataValue.getValue().getPlanned());
         spentColumn.setCellValueFactory(dataValue -> dataValue.getValue().getSpent());
         balanceColumn.setCellValueFactory(dataValue -> dataValue.getValue().getBalance());
-//        parentNameColumn.setCellValueFactory(dataValue -> dataValue.getValue().getCategory().get().getParent() == null ? null : dataValue.getValue().getCategory().get().getParent().getName());
 
         // Buttons
         deleteButton.disableProperty().bind(Bindings.isEmpty(planTable.getSelectionModel().getSelectedItems()));
@@ -133,7 +132,7 @@ public class BudgetOverviewController {
     private void handleDeleteAction(ActionEvent event) {
         Budget budget = planTable.getSelectionModel().getSelectedItem();
         if (budget != null) {
-            generalBud.setAmount(generalBud.getAmount().get().subtract(budget.getAmount().get())); //TODO:?? problem described at the end
+            generalBud.setPlanned(generalBud.getPlanned().get().subtract(budget.getPlanned().get())); //TODO:?? problem described at the end
             generalBud.setSpent(generalBud.getSpent().get().subtract(budget.getSpent().get()));
             planTable.getItems().remove(budget);
         }
@@ -143,12 +142,12 @@ public class BudgetOverviewController {
     @FXML
     private void handleEditAction(ActionEvent event) {
         Budget budget = planTable.getSelectionModel().getSelectedItem();
-        BigDecimal oldAmount = budget.getAmount().get();
+        BigDecimal oldPlanned = budget.getPlanned().get();
 
         if (budget != null) {
             appController.showBudgetEditDialog(budget);
-            generalBud.setAmount(generalBud.getAmount().get().subtract(oldAmount));
-            generalBud.setAmount(generalBud.getAmount().get().add(budget.getAmount().get()));    // bardzo brzydko TODO: a tak�e nie dzia�a poprawnie tak przy okazji...
+            generalBud.setPlanned(generalBud.getPlanned().get().subtract(oldPlanned));
+            generalBud.setPlanned(generalBud.getPlanned().get().add(budget.getPlanned().get()));    // bardzo brzydko TODO: a tak�e nie dzia�a poprawnie tak przy okazji...
 
         }
         updateControls();
@@ -159,7 +158,7 @@ public class BudgetOverviewController {
         Budget budget = new Budget(new BigDecimal(0));
         if (appController.showBudgetEditDialog(budget)) {
             planTable.getItems().add(budget);
-            generalBud.setAmount(generalBud.getAmount().get().add(budget.getAmount().get()));    // bardzo brzydko
+            generalBud.setPlanned(generalBud.getPlanned().get().add(budget.getPlanned().get()));    // bardzo brzydko
         }
 
         updateControls();
@@ -172,34 +171,28 @@ public class BudgetOverviewController {
     public void setData(List<Category> parentPlanned) { // List of
 //        this.data = parentPlanned;
         parentPlanTable.setItems(FXCollections.observableArrayList(parentPlanned.stream().map(x -> {
-            Budget o = appController.getBudgetPerCategory(x);
+            Budget o = appController.getBudgetForCategory(x);
             if (o != null) {
-                logger.info(o.getCategory().get().getName().get());
                 return o;
             }
             o = new Budget(new BigDecimal(0));
             o.setCategory(x);
-            logger.info("Parent Category dont have budget " + o.getCategory().get().getName().get());
+            o.setSpent(appController.getTotalSpentPerCategory(x));
             return o;
         }).collect(Collectors.toList())));
 
 
-        /* Take first with subcategories - only for tests */
-        for (Category cat : parentPlanned) {
-            List<Budget> a = appController.getSubcategoriesBudgets(cat);
-            if (a != null) {
-                logger.debug(cat.getName().toString());
+        /* Take first's subcategories - */  //
+        List<Budget> a = appController.getSubcategoriesBudgets(parentPlanned.get(0));
+        if (a != null) {
                 planTable.setItems(FXCollections.observableArrayList(a));
-                for(Budget budget : a)
-                    logger.info(budget.getCategory().get().getName());
-                break;
-            }
         }
+
     }
 
     public void updateControls() {
         generalBalance.setText(generalBud.getBalance().get().toString());
-        generalBudget.setText(generalBud.getAmount().get().toString());
+        generalBudget.setText(generalBud.getPlanned().get().toString());
         planTable.getColumns().get(0).setVisible(false);
         planTable.getColumns().get(0).setVisible(true);
     }

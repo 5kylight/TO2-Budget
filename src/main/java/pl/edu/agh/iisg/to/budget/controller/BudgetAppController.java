@@ -56,14 +56,14 @@ public class BudgetAppController {
             data = getExpenses(addData());
             //TODO: test data
             for(Budget budget : data){
-                budget.setAmount(budget.getSpent().get().add(new BigDecimal(random.nextInt(100))));
+                budget.setPlanned(budget.getSpent().get().add(new BigDecimal(random.nextInt(100))));
             }
 
             controller.setAppController(this);
             controller.setData(parentCategories);
 
-            int total = data.stream().mapToInt(budget -> budget.getAmount().get().intValue()).sum();
-            generalBudget.setAmount(new BigDecimal(total));
+            int total = data.stream().mapToInt(budget -> budget.getPlanned().get().intValue()).sum();
+            generalBudget.setPlanned(new BigDecimal(total));
 
             controller.setGeneralBud(generalBudget);
 
@@ -136,8 +136,8 @@ public class BudgetAppController {
     Wejściem dla niej będzie to co dostaniemy od wydatków i przerobi to na nasze budżety
 */
 
-    public void setGeneralBudgetAmount(BigDecimal amount) {
-        this.generalBudget.setAmount(amount);
+    public void setGeneralBudgetPlan(BigDecimal plan) {
+        this.generalBudget.setPlanned(plan);
     }
 
     public List<Budget> getExpenses(Map<Category, BigDecimal> categorisedExpenses) {
@@ -159,7 +159,6 @@ public class BudgetAppController {
         for (int i = 0; i < 100; i++) {
             Category category = allCategories.get(random.nextInt(allCategories.size() - 1));
             data.put(category, new BigDecimal(random.nextInt(100)));
-            logger.debug("Created category "+ category.getName().get() + " with parent " +  category.getParent().getName().get() );
         }
         return data;
     }
@@ -170,25 +169,25 @@ public class BudgetAppController {
                 .collect(Collectors.toList());
     }
 
-    private BigDecimal getTotalAmountPerCategory(Category category) {
-        int sum = getAmountPerCategory(category);
+    public BigDecimal getTotalPlanPerCategory(Category category) {
+        int sum = getPlanPerCategory(category);
         if (!category.isParent()) {
             return new BigDecimal(sum);
         } else {
             for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
-                sum+=getAmountPerCategory(categoryOP.get());
+                sum+=getPlanPerCategory(categoryOP.get());
             }
             return new BigDecimal(sum);
         }
     }
 
-    private int getAmountPerCategory(Category category){
+    public int getPlanPerCategory(Category category){
         return data.stream()
                 .filter(budget -> budget.getCategory().get().toString().equals(category.getName().get()))
-                .mapToInt(budget1 -> budget1.getAmount().get().intValue()).sum();
+                .mapToInt(budget1 -> budget1.getPlanned().get().intValue()).sum();
     }
 
-    private BigDecimal getTotalSpentPerCategory(Category category) {
+    public BigDecimal getTotalSpentPerCategory(Category category) {
         int sum = getSpentPerCategory(category);
         if (!category.isParent()) {
             return new BigDecimal(sum);
@@ -211,10 +210,10 @@ public class BudgetAppController {
     }
 
     public BigDecimal getSummarizedBalance(Category category){
-        return getTotalAmountPerCategory(category).subtract(getTotalSpentPerCategory(category));
+        return getTotalPlanPerCategory(category).subtract(getTotalSpentPerCategory(category));
     }
 
-    public Budget getBudgetPerCategory(Category category) {
+    public Budget getBudgetForCategory(Category category) {
         Optional<Budget> o = data.stream().filter(x -> x.getCategory().get().equals(category)).findFirst();
         if (o.isPresent())
             return o.get();

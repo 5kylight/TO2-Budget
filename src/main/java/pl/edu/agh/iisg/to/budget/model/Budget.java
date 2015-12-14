@@ -11,35 +11,35 @@ import java.math.BigDecimal;
 public class Budget {
 
     private ObjectProperty<Category> category;
-    private ObjectProperty<BigDecimal> amount;
+    private ObjectProperty<BigDecimal> planned;
     private ObjectProperty<BigDecimal> spent;
     private ObjectProperty<BigDecimal> balance;
 
 
-    public Budget(BigDecimal amount) {
-        this.amount = new SimpleObjectProperty<>(amount);
+    public Budget(BigDecimal planned) {
+        this.planned = new SimpleObjectProperty<>(planned);
         this.spent =  new SimpleObjectProperty<>(new BigDecimal(0));
         this.balance = getBalance();
     }
 
     public Budget() {
-        this.amount = new SimpleObjectProperty<>(new BigDecimal(0));
+        this.planned = new SimpleObjectProperty<>(new BigDecimal(0));
         this.spent =  new SimpleObjectProperty<>(new BigDecimal(0));
         this.balance = getBalance();
     }
 
-    public ObjectProperty<BigDecimal> getAmount() {
-        return amount;
+    public ObjectProperty<BigDecimal> getPlanned() {
+        return planned;
     }
 
-    public Budget setAmount(BigDecimal amount) {
-        this.amount = new SimpleObjectProperty<>(amount);
-        this.balance.setValue(amount.subtract(this.spent.getValue()));
+    public Budget setPlanned(BigDecimal planned) {
+        this.planned = new SimpleObjectProperty<>(planned);
+        this.balance.setValue(planned.subtract(this.spent.getValue()));
         return this;
     }
 
-    public ObjectProperty<BigDecimal> amountProperty() {
-        return amount;
+    public ObjectProperty<BigDecimal> plannedProperty() {
+        return planned;
     }
 
     public ObjectProperty<BigDecimal> getSpent() {
@@ -48,7 +48,7 @@ public class Budget {
 
     public Budget setSpent(BigDecimal spent) {
         this.spent = new SimpleObjectProperty<>(spent);
-        this.balance.setValue(this.amount.getValue().subtract(spent));
+        this.balance.setValue(this.planned.getValue().subtract(spent));
         return this;
     }
 
@@ -63,7 +63,7 @@ public class Budget {
     }
 
     public ObjectProperty<BigDecimal> getBalance() {
-        this.balance = new SimpleObjectProperty<>(this.amount.get().subtract(this.spent.get()));
+        this.balance = new SimpleObjectProperty<>(this.planned.get().subtract(this.spent.get()));
         return this.balance;
     }
 
@@ -81,10 +81,10 @@ public class Budget {
 //    }
 //    public BigDecimal getTotalAmount(){
 //        Category category = this.category.get();
-//        BigDecimal sum = new BigDecimal(0).add(this.amount.get());
+//        BigDecimal sum = new BigDecimal(0).add(this.planned.get());
 //        if(category.getSubCategories()!=null && !category.getSubCategories().isEmpty()){
 //            for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
-//                sum.add(categoryOP.get().getBudget().get().getAmount().get());
+//                sum.add(categoryOP.get().getBudget().get().getPlanned().get());
 //            }
 //        }
 //        return sum;
@@ -92,7 +92,7 @@ public class Budget {
 //
 //    public BigDecimal getTotalSpent(){
 //        Category category = this.category.get();
-//        BigDecimal sum = new BigDecimal(0).add(this.amount.get());
+//        BigDecimal sum = new BigDecimal(0).add(this.planned.get());
 //        if(category.getSubCategories()!= null && !category.getSubCategories().isEmpty()){
 //            for(ObjectProperty<Category> categoryOP : category.getSubCategories()){
 //                sum.add(categoryOP.get().getBudget().get().getSpent().get());

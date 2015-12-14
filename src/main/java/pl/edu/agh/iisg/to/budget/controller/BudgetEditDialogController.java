@@ -106,7 +106,7 @@ public class BudgetEditDialogController {
 
         budget.setCategory(categoryComboBox.getValue());
         try {
-            budget.setAmount((BigDecimal) decimalFormatter.parse(amountTextField.getText()));
+            budget.setPlanned((BigDecimal) decimalFormatter.parse(amountTextField.getText()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -117,7 +117,7 @@ public class BudgetEditDialogController {
 
     private void updateControls() {
         logger.debug("Updating controls");
-        amountTextField.setText(budget.getAmount().getValue().toString());
+        amountTextField.setText(budget.getPlanned().getValue().toString());
         categoryComboBox.setItems(this.categories);
         parentCategoryComboBox.setItems(this.categories);
     }
