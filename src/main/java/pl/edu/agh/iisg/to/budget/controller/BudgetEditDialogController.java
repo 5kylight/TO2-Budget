@@ -46,7 +46,10 @@ public class BudgetEditDialogController {
     public void initialize() {
 
         categoryComboBox.setConverter(new CategoryConverter());
+        categoryComboBox.setEditable(true);
         parentCategoryComboBox.setConverter(new CategoryConverter());
+        parentCategoryComboBox.setEditable(true);
+
     }
 
 
