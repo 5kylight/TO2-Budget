@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.edu.agh.iisg.to.budget.Main;
 import pl.edu.agh.iisg.to.budget.model.Budget;
 import pl.edu.agh.iisg.to.budget.model.Category;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
  * Created by tom on 24.11.15.
  */
 public class BudgetAppController {
+    private static final Logger logger = LogManager.getLogger(BudgetAppController.class);
 
     private Stage stage;
     private List<Budget> data;
@@ -32,6 +35,8 @@ public class BudgetAppController {
 
     private List<Category> allCategories;  // tymczasowo
 
+    private List<Category> parentCategories;
+
     public void initRootLayout() {
         try {
             this.stage.setTitle("Budget");
@@ -44,6 +49,7 @@ public class BudgetAppController {
             // set initial data into controller
             BudgetOverviewController controller = loader.getController();
 
+            parentCategories = generateParentCategories();
             allCategories = generateCategories();
             generalBudget = new Budget(new BigDecimal(0));
 
@@ -53,7 +59,8 @@ public class BudgetAppController {
                 budget.setAmount(budget.getSpent().get().add(new BigDecimal(random.nextInt(100))));
             }
 
-            controller.setData(data);
+            controller.setAppController(this);
+            controller.setData(parentCategories);
 
             int total = data.stream().mapToInt(budget -> budget.getAmount().get().intValue()).sum();
             generalBudget.setAmount(new BigDecimal(total));
@@ -107,11 +114,23 @@ public class BudgetAppController {
 
     private List generateCategories() {
         List<Category> categories = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            categories.add(new Category().setName("Category " + i));
+        Random random = new Random();
+        for (int i = 0; i < 100; i++) {
+            Category parentCategory = parentCategories.get(random.nextInt(parentCategories.size() - 1));
+            Category category = new Category().setName("Category " + i).setParent(parentCategory);
+            parentCategory.addSubCategories(category);
+            categories.add(category);
         }
         return categories;
     }
+    private List generateParentCategories() {
+        List<Category> categories = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            categories.add(new Category().setName("ParentCategory " + i));
+        }
+        return categories;
+    }
+
 
     /*Później w BudgetAppControlerze chciałbym taką metodę która dostaje na wejściu mapę categorii i ile zostało wydane lub przypływu a zwraca listę budzetów
     Wejściem dla niej będzie to co dostaniemy od wydatków i przerobi to na nasze budżety
@@ -137,13 +156,10 @@ public class BudgetAppController {
     private Map<Category, BigDecimal> addData() {
         Map<Category, BigDecimal> data = new HashMap<>();
         Random random = new Random();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             Category category = allCategories.get(random.nextInt(allCategories.size() - 1));
-            Category parentCategory = allCategories.get(random.nextInt(allCategories.size() - 1));
-
-            category.setParent(parentCategory);
-            parentCategory.addSubCategories(category);
             data.put(category, new BigDecimal(random.nextInt(100)));
+            logger.debug("Created category "+ category.getName().get() + " with parent " +  category.getParent().getName().get() );
         }
         return data;
     }
@@ -184,6 +200,10 @@ public class BudgetAppController {
         }
     }
 
+    public List<Budget> getSubcategoriesBudgets(Category parentCategory) {
+        return data.stream().filter(x -> x.getCategory().get().getParent() == parentCategory).collect(Collectors.toList());
+    }
+
     private int getSpentPerCategory(Category category){
         return data.stream()
                 .filter(budget -> budget.getCategory().get().toString().equals(category.getName().get()))
@@ -192,6 +212,13 @@ public class BudgetAppController {
 
     public BigDecimal getSummarizedBalance(Category category){
         return getTotalAmountPerCategory(category).subtract(getTotalSpentPerCategory(category));
+    }
+
+    public Budget getBudgetPerCategory(Category category) {
+        Optional<Budget> o = data.stream().filter(x -> x.getCategory().get().equals(category)).findFirst();
+        if (o.isPresent())
+            return o.get();
+        return null;
     }
 
 

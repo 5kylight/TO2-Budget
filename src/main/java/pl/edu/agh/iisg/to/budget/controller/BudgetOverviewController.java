@@ -5,15 +5,21 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.edu.agh.iisg.to.budget.model.Budget;
+import pl.edu.agh.iisg.to.budget.model.Category;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by tom on 23.11.15.
  */
 public class BudgetOverviewController {
+    private static final Logger logger = LogManager.getLogger(BudgetOverviewController.class);
+
     private BudgetAppController appController;
     private List<Budget> data;
 
@@ -93,8 +99,8 @@ public class BudgetOverviewController {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (! row.isEmpty()) ) {
                     Budget parentBudget = row.getItem();
-                    System.out.println(parentBudget);
-                    planTable.setItems(FXCollections.observableArrayList(parentBudget.getSubcategoriesBudgets()));
+                    if (parentBudget != null)
+                        planTable.setItems(FXCollections.observableArrayList(appController.getSubcategoriesBudgets(parentBudget.getCategory().get())));
                 }
             });
             return row ;
@@ -163,10 +169,32 @@ public class BudgetOverviewController {
         this.appController = appController;
     }
 
-    public void setData(List<Budget> parentPlanned) { // List of
-        this.data = parentPlanned;
-        parentPlanTable.setItems(FXCollections.observableArrayList(parentPlanned));
-        planTable.setItems(FXCollections.observableArrayList(parentPlanned.get(0).getSubcategoriesBudgets()));
+    public void setData(List<Category> parentPlanned) { // List of
+//        this.data = parentPlanned;
+        parentPlanTable.setItems(FXCollections.observableArrayList(parentPlanned.stream().map(x -> {
+            Budget o = appController.getBudgetPerCategory(x);
+            if (o != null) {
+                logger.info(o.getCategory().get().getName().get());
+                return o;
+            }
+            o = new Budget(new BigDecimal(0));
+            o.setCategory(x);
+            logger.info("Parent Category dont have budget " + o.getCategory().get().getName().get());
+            return o;
+        }).collect(Collectors.toList())));
+
+
+        /* Take first with subcategories - only for tests */
+        for (Category cat : parentPlanned) {
+            List<Budget> a = appController.getSubcategoriesBudgets(cat);
+            if (a != null) {
+                logger.debug(cat.getName().toString());
+                planTable.setItems(FXCollections.observableArrayList(a));
+                for(Budget budget : a)
+                    logger.info(budget.getCategory().get().getName());
+                break;
+            }
+        }
     }
 
     public void updateControls() {

@@ -39,6 +39,27 @@ public class Category {
         return this;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Category category = (Category) o;
+
+        if (!name.equals(category.name)) return false;
+        if (parentCategory != null ? !parentCategory.equals(category.parentCategory) : category.parentCategory != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + (parentCategory != null ? parentCategory.hashCode() : 0);
+        return result;
+    }
+
     public Category getParent() {
         if (parentCategory != null)
             return parentCategory.get();

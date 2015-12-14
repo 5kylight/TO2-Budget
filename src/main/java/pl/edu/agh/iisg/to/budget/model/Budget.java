@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Created by tom on 23.11.15.
@@ -71,11 +70,7 @@ public class Budget {
     public void setBalance(BigDecimal balance) {
         this.balance.set(balance);
     }
-    // TODO:
-    public List<Budget> getSubcategoriesBudgets() {
 
-        return null;
-    }
 
     /* dla danego bud�etu dosta� sumaryczny bilans - czyli jak jaki� bilans ma podkategorie to ten bilans musi sumowa� wszystkie podkategorie
     Czyli taki bilans razem z podkategoriami Emotikon smile
