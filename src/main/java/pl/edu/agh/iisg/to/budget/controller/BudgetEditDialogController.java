@@ -44,7 +44,6 @@ public class BudgetEditDialogController {
 
     private boolean approved;
 
-
     public void setAppController(BudgetAppController appController) {
         this.appController = appController;
     }
@@ -54,7 +53,6 @@ public class BudgetEditDialogController {
         categoryComboBox.setConverter(new CategoryConverter());
         parentCategoryComboBox.setConverter(new CategoryConverter());
     }
-
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
@@ -88,8 +86,8 @@ public class BudgetEditDialogController {
     @FXML
     private void handleOkAction(ActionEvent event) {
         if (isInputValid()) {
-            validate();
             approved = true;
+            validate();
             dialogStage.close();
         }
     }
@@ -114,58 +112,22 @@ public class BudgetEditDialogController {
             budget.getCategory().get().getParent().removeSubcategory(budget.getCategory().get());
         }
 
-        if (categoryComboBox.getValue() == null || parentCategoryComboBox.getValue() == null )
+        if (categoryComboBox.getValue() == null || parentCategoryComboBox.getValue() == null ) {
             logger.error("Not both categories selected");
-
-
-        budget.setCategory(categoryComboBox.getValue());
-        budget.getCategory().get().setParent(parentCategoryComboBox.getValue());
-        budget.getCategory().get().getParent().addSubCategories(budget.getCategory().get());
-        try {
-            budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
-        } catch (ParseException e) {
-            logger.error(e);
-            e.printStackTrace();
+            approved = false;
         }
+        else {
 
-
-
-//
-//        /* Remember old parent category */
-//        Category oldParentCategory = null;
-//        if (budget.getCategory() != null)
-//            oldParentCategory = budget.getCategory().get().getParent();
-//
-//        if (categoryComboBox.getValue() == null ) {
-//            /* Adding parent category */
-//            if (parentCategoryComboBox.getValue() == null)
-//                logger.error("Cannot add parent category, please specify parent category");
-//            budget.setCategory(parentCategoryComboBox.getValue());
-//        } else {
-//            /* Adding subcategory*/
-//
-//                budget.setCategory(categoryComboBox.getValue());
-//                try {
-//                    budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                Category newParentCategory = parentCategoryComboBox.getValue();
-//
-//                if (newParentCategory != null) {
-//                    if (newParentCategory.equals(oldParentCategory)) {
-//                        Budget parentBudget = appController.getBudgetForCategory(newParentCategory);
-//                        parentBudget
-//
-//                    } else {
-//                        newParentCategory.addSubCategories(budget.getCategory().get());
-//                        budget.getCategory().get().setParent(newParentCategory);
-//                    }
-//
-//                } else {
-//                    logger.error("Category must have a parent");
-//                }
-//        }
+            budget.setCategory(categoryComboBox.getValue());
+            budget.getCategory().get().setParent(parentCategoryComboBox.getValue());
+            budget.getCategory().get().getParent().addSubCategories(budget.getCategory().get());
+            try {
+                budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
+            } catch (ParseException e) {
+                logger.error(e);
+                e.printStackTrace();
+            }
+        }
     }
 
     private void updateControls() {
@@ -174,9 +136,6 @@ public class BudgetEditDialogController {
         categoryComboBox.setItems(this.categories);
         parentCategoryComboBox.setItems(this.parentCategories);
     }
-
-
-
 
     public List<Category> getParentCategories() {
         return parentCategories;

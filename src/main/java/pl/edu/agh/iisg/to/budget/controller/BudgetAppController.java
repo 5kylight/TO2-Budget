@@ -118,6 +118,7 @@ public class BudgetAppController {
             return false;
         }
     }
+
     public boolean showAddCategoryDialog(Category category) {
         try {
             // Load the fxml file and create a new stage for the dialog
@@ -152,10 +153,6 @@ public class BudgetAppController {
         this.data.remove(budget);
     }
 
-    /*Później w BudgetAppControlerze chciałbym taką metodę która dostaje na wejściu mapę categorii i ile zostało wydane lub przypływu a zwraca listę budzetów
-    Wejściem dla niej będzie to co dostaniemy od wydatków i przerobi to na nasze budżety
-*/
-
     public void setGeneralBudgetPlan(BigDecimal plan) {
         this.generalBudget.setPlanned(plan);
     }
@@ -172,8 +169,6 @@ public class BudgetAppController {
         }
         return budgets;
     }
-
-
 
     public List<Category> getParentCategories(List<Category> categories) {
         return categories.stream()
@@ -239,7 +234,6 @@ public class BudgetAppController {
     public void addSubcategory(Category category) {
         this.subcategories.add(category);
     }
-
 
     public void addParentCategory(Category category) {
         this.parentCategories.add(category);

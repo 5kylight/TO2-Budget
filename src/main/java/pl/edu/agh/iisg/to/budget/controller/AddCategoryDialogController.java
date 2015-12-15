@@ -81,9 +81,10 @@ public class AddCategoryDialogController {
     }
 
     private void validate() {
-        if (categoryNameTextField.getText() == null)
+        if (categoryNameTextField.getText() == null) {
             logger.error("Category name is to short");
-        else {
+
+        } else {
             String categoryName = categoryNameTextField.getText();
             if (isParentCheckBox.isSelected()) {
                 approved = true;

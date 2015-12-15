@@ -21,7 +21,7 @@ public class BudgetOverviewController {
     private static final Logger logger = LogManager.getLogger(BudgetOverviewController.class);
 
     private BudgetAppController appController;
-    private List<Budget> data;
+//    private List<Budget> data;
 
     public void setGeneralPla(Budget generalPla) {
         this.generalPla = generalPla;
@@ -125,6 +125,7 @@ public class BudgetOverviewController {
 
     @FXML
     private void handleRefreshAction(ActionEvent event) {
+        logger.info("Refreshing view");
         updateControls();
     }
 
@@ -214,16 +215,13 @@ public class BudgetOverviewController {
     }
 
     public void setData(List<Category> parentPlanned, List<Budget> data) { // List of
-        this.data = data;
-
+//        this.data = data;
         updateParentPlanTable(parentPlanned);
-
         /* Take first's subcategories - */  //
         List<Budget> a = appController.getSubcategoriesBudgets(parentPlanned.get(0));
         if (a != null) {
             planTable.setItems(FXCollections.observableArrayList(a));
         }
-
     }
 
     public void updateControls() {
