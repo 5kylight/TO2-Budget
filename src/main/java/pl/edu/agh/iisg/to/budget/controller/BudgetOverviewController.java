@@ -21,6 +21,7 @@ public class BudgetOverviewController {
     private static final Logger logger = LogManager.getLogger(BudgetOverviewController.class);
 
     private BudgetAppController appController;
+    private BudgetManager budgetManager;
 //    private List<Budget> data;
 
     public void setGeneralPla(Budget generalPla) {
@@ -100,7 +101,7 @@ public class BudgetOverviewController {
                 if (event.getClickCount() == 1 && (! row.isEmpty()) ) {
                     Budget parentBudget = row.getItem();
                     if (parentBudget != null)
-                        planTable.setItems(FXCollections.observableArrayList(appController.getSubcategoriesBudgets(parentBudget.getCategory().get())));
+                        planTable.setItems(FXCollections.observableArrayList(budgetManager.getSubcategoriesBudgets(parentBudget.getCategory().get())));
                 }
             });
             return row ;
@@ -135,11 +136,11 @@ public class BudgetOverviewController {
         if (budget != null) {
             generalPla.setPlanned(generalPla.getPlanned().get().subtract(budget.getPlanned().get())); //TODO:?? problem described at the end
             generalPla.setSpent(generalPla.getSpent().get().subtract(budget.getSpent().get()));
-            Budget parentBudget = appController.getBudgetForCategory(budget.getCategory().get().getParent());
+            Budget parentBudget = budgetManager.getBudgetForCategory(budget.getCategory().get().getParent());
             parentBudget.setPlanned(parentBudget.getPlanned().get().subtract(budget.getPlanned().get())); //TODO:?? problem described at the end
             parentBudget.setSpent(parentBudget.getSpent().get().subtract(budget.getSpent().get()));
             parentBudget.getCategory().get().removeSubcategory(budget.getCategory().get());
-            appController.removeBudget(budget);
+            budgetManager.removeBudget(budget);
             planTable.getItems().remove(budget);
         }
         updateControls();
@@ -156,15 +157,15 @@ public class BudgetOverviewController {
         generalPla.setPlanned(generalPla.getPlanned().get().subtract(oldPlanned));
         generalPla.setPlanned(generalPla.getPlanned().get().add(budget.getPlanned().get()));    // bardzo brzydko TODO: a tak�e nie dzia�a poprawnie tak przy okazji...
 
-        Budget oldParentBudget = appController.getBudgetForCategory(oldParentCategory);
+        Budget oldParentBudget = budgetManager.getBudgetForCategory(oldParentCategory);
         oldParentBudget.setPlanned(oldParentBudget.getPlanned().get().subtract(oldPlanned));
         oldParentBudget.setSpent(oldParentBudget.getSpent().get().subtract(budget.getSpent().get()));
-        Budget parentBudget = appController.getBudgetForCategory(budget.getCategory().get().getParent());
+        Budget parentBudget = budgetManager.getBudgetForCategory(budget.getCategory().get().getParent());
         if (parentBudget == null) {
             parentBudget = new Budget(new BigDecimal(0));
             parentBudget.setPlanned(new BigDecimal(0));
             parentBudget.setSpent(new BigDecimal(0));
-            appController.addBudget(parentBudget);
+            budgetManager.addBudget(parentBudget);
         }
 
         parentBudget.setSpent(parentBudget.getSpent().get().add(budget.getSpent().get()));
@@ -177,15 +178,15 @@ public class BudgetOverviewController {
     private void handleAddAction(ActionEvent event) {
         Budget budget = new Budget(new BigDecimal(0));
         if (appController.showBudgetEditDialog(budget)) {
-            appController.addBudget(budget);
+            budgetManager.addBudget(budget);
             Category parentCategory = budget.getCategory().get().getParent();
             Budget parentBudget = null;
-            parentBudget = appController.getBudgetForCategory(parentCategory);
+            parentBudget = budgetManager.getBudgetForCategory(parentCategory);
             if (parentBudget == null) {
                 parentBudget = new Budget(new BigDecimal(0));
                 parentBudget.setPlanned(new BigDecimal(0));
                 parentBudget.setSpent(new BigDecimal(0));
-                appController.addBudget(parentBudget);
+                budgetManager.addBudget(parentBudget);
             }
 
             parentBudget.setSpent(parentBudget.getSpent().get().add(budget.getSpent().get()));
@@ -201,9 +202,9 @@ public class BudgetOverviewController {
     private void handleAddCategoryAction() {
         Category category = new Category();
         if (appController.showAddCategoryDialog(category)) {
-            appController.addParentCategory(category);
+            budgetManager.addParentCategory(category);
         } else {
-            appController.addSubcategory(category);
+            budgetManager.addSubcategory(category);
         }
 
         updateControls();
@@ -218,14 +219,14 @@ public class BudgetOverviewController {
 //        this.data = data;
         updateParentPlanTable(parentPlanned);
         /* Take first's subcategories - */  //
-        List<Budget> a = appController.getSubcategoriesBudgets(parentPlanned.get(0));
+        List<Budget> a = budgetManager.getSubcategoriesBudgets(parentPlanned.get(0));
         if (a != null) {
             planTable.setItems(FXCollections.observableArrayList(a));
         }
     }
 
     public void updateControls() {
-        updateParentPlanTable(appController.getParentCategories());
+        updateParentPlanTable(budgetManager.getParentCategories());
         generalBalance.setText(generalPla.getBalance().get().toString());
         generalPlan.setText(generalPla.getPlanned().get().toString());
         planTable.getColumns().get(0).setVisible(false);
@@ -236,17 +237,25 @@ public class BudgetOverviewController {
 
     public void updateParentPlanTable(List<Category> categories) {
         parentPlanTable.setItems(FXCollections.observableArrayList(categories.stream().map(x -> {
-            Budget o = appController.getBudgetForCategory(x);
+            Budget o = budgetManager.getBudgetForCategory(x);
             if (o != null) {
                 return o;
             }
             o = new Budget(new BigDecimal(0));
             o.setCategory(x);
-            o.setSpent(appController.getTotalSpentPerCategory(x));
-            o.setPlanned(appController.getTotalPlanPerCategory(x));
-            appController.addBudget(o);
+            o.setSpent(budgetManager.getTotalSpentPerCategory(x));
+            o.setPlanned(budgetManager.getTotalPlanPerCategory(x));
+            budgetManager.addBudget(o);
             return o;
         }).collect(Collectors.toList())));
+    }
+
+    public void setBudgetManager(BudgetManager budgetManager) {
+        this.budgetManager = budgetManager;
+    }
+
+    public BudgetManager getBudgetManager() {
+        return budgetManager;
     }
 
 /*

@@ -19,6 +19,11 @@ public class AddCategoryDialogController {
 
 
     private BudgetAppController appController;
+    private BudgetManager budgetManager;
+
+    public void setBudgetManager(BudgetManager budgetManager) {
+        this.budgetManager = budgetManager;
+    }
 
     private Category category;
 
@@ -88,12 +93,12 @@ public class AddCategoryDialogController {
             String categoryName = categoryNameTextField.getText();
             if (isParentCheckBox.isSelected()) {
                 approved = true;
-                if (!appController.getParentCategories().stream().filter(x -> x.getName().get().equals(categoryName)).collect(Collectors.toList()).isEmpty()) {
+                if (!budgetManager.getParentCategories().stream().filter(x -> x.getName().get().equals(categoryName)).collect(Collectors.toList()).isEmpty()) {
                     logger.error("Parent Category already exists");
                 }
             } else {
                 approved = false;
-                if (!appController.getSubcategories().stream().filter(x -> x.getName().get().equals(categoryName)).collect(Collectors.toList()).isEmpty()) {
+                if (!budgetManager.getSubcategories().stream().filter(x -> x.getName().get().equals(categoryName)).collect(Collectors.toList()).isEmpty()) {
                     logger.error("Subcategory already exists");
                 }
             }

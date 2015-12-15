@@ -27,6 +27,12 @@ public class BudgetEditDialogController {
 
 
     private BudgetAppController appController;
+    private BudgetManager budgetManager;
+
+    public void setBudgetManager(BudgetManager budgetManager) {
+        this.budgetManager = budgetManager;
+    }
+
     private Budget budget;
 
     private ObservableList<Category> categories;
@@ -71,7 +77,7 @@ public class BudgetEditDialogController {
 
     public void setCategories(List<Category> categories) {
         this.categories = FXCollections.observableArrayList();
-        this.categories.addAll(categories.stream().filter(x -> appController.getBudgetForCategory(x) == null).collect(Collectors.toList()));
+        this.categories.addAll(categories.stream().filter(x -> budgetManager.getBudgetForCategory(x) == null).collect(Collectors.toList()));
 
     }
     public void setParentCategories(List<Category> parentCategories) {
