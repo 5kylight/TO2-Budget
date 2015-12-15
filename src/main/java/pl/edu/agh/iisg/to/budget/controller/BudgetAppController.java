@@ -33,10 +33,17 @@ public class BudgetAppController {
 
     private Budget generalBudget;
 
-    private List<Category> allCategories;  // tymczasowo
+    private List<Category> subcategories;  // tymczasowo
 
     private List<Category> parentCategories;
 
+    public List<Category> getSubcategories() {
+        return subcategories;
+    }
+
+    public List<Category> getParentCategories() {
+        return parentCategories;
+    }
     public void initRootLayout() {
         try {
             this.stage.setTitle("Budget");
@@ -50,17 +57,17 @@ public class BudgetAppController {
             BudgetOverviewController controller = loader.getController();
 
             parentCategories = generateParentCategories();
-            allCategories = generateCategories();
+            subcategories = generateSubcategories();
             generalBudget = new Budget(new BigDecimal(0));
 
-            data = getExpenses(addData());
+            data = getExpenses(generateData());
             //TODO: test data
             for(Budget budget : data){
-                budget.setPlanned(budget.getSpent().get().add(new BigDecimal(random.nextInt(100))));
+                budget.setPlanned(budget.getSpent().get().add(new BigDecimal(random.nextInt(10))));
             }
 
             controller.setAppController(this);
-            controller.setData(parentCategories);
+            controller.setData(parentCategories, data);
 
             int total = data.stream().mapToInt(budget -> budget.getPlanned().get().intValue()).sum();
             generalBudget.setPlanned(new BigDecimal(total));
@@ -80,7 +87,6 @@ public class BudgetAppController {
         }
     }
 
-
     public boolean showBudgetEditDialog(Budget budget) {
         try {
             // Load the fxml file and create a new stage for the dialog
@@ -97,8 +103,9 @@ public class BudgetAppController {
             dialogStage.setScene(scene);
 
             BudgetEditDialogController controller = loader.getController();
+            controller.setAppController(this);
             controller.setDialogStage(dialogStage);
-            controller.setCategories(allCategories);
+            controller.setCategories(subcategories);
             controller.setParentCategories(parentCategories);
             controller.setData(budget);
 
@@ -111,25 +118,36 @@ public class BudgetAppController {
             return false;
         }
     }
+    public boolean showAddCategoryDialog(Category category) {
+        try {
+            // Load the fxml file and create a new stage for the dialog
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/AddCategoryDialog.fxml"));
+            BorderPane page = (BorderPane) loader.load();
 
-    private List generateCategories() {
-        List<Category> categories = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            Category parentCategory = parentCategories.get(random.nextInt(parentCategories.size() - 1));
-            Category category = new Category().setName("Category " + i).setParent(parentCategory);
-            parentCategory.addSubCategories(category);
-            categories.add(category);
+            // Create the dialog Stage.
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Add Category");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(stage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            AddCategoryDialogController controller = loader.getController();
+            controller.setAppController(this);
+            controller.setDialogStage(dialogStage);
+            controller.setCategory(category);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+            return controller.isApproved();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        return categories;
     }
-    private List generateParentCategories() {
-        List<Category> categories = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            categories.add(new Category().setName("ParentCategory " + i));
-        }
-        return categories;
-    }
+
 
 
     /*Później w BudgetAppControlerze chciałbym taką metodę która dostaje na wejściu mapę categorii i ile zostało wydane lub przypływu a zwraca listę budzetów
@@ -153,15 +171,7 @@ public class BudgetAppController {
         return budgets;
     }
 
-    private Map<Category, BigDecimal> addData() {
-        Map<Category, BigDecimal> data = new HashMap<>();
-        Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            Category category = allCategories.get(random.nextInt(allCategories.size() - 1));
-            data.put(category, new BigDecimal(random.nextInt(100)));
-        }
-        return data;
-    }
+
 
     public List<Category> getParentCategories(List<Category> categories) {
         return categories.stream()
@@ -220,5 +230,47 @@ public class BudgetAppController {
         return null;
     }
 
+    public void addBudget(Budget budget) {
+        this.data.add(budget);
+    }
 
+    public void addSubcategory(Category category) {
+        this.subcategories.add(category);
+    }
+
+
+    public void addParentCategory(Category category) {
+        this.parentCategories.add(category);
+    }
+
+/**
+ *  Generators */
+
+    private List generateSubcategories() {
+        List<Category> categories = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            Category parentCategory = parentCategories.get(random.nextInt(parentCategories.size()));
+            Category category = new Category().setName("Category " + i).setParent(parentCategory);
+            parentCategory.addSubCategories(category);
+            categories.add(category);
+        }
+        return categories;
+    }
+    private List generateParentCategories() {
+        List<Category> categories = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            categories.add(new Category().setName("ParentCategory " + i));
+        }
+        return categories;
+    }
+    private Map<Category, BigDecimal> generateData() {
+        Map<Category, BigDecimal> data = new HashMap<>();
+        Random random = new Random();
+        for (int i = 0; i < 3; i++) {
+            Category category = subcategories.get(i);
+            data.put(category, new BigDecimal(random.nextInt(10)));
+        }
+        return data;
+    }
 }

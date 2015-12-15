@@ -157,29 +157,53 @@ public class BudgetOverviewController {
     private void handleAddAction(ActionEvent event) {
         Budget budget = new Budget(new BigDecimal(0));
         if (appController.showBudgetEditDialog(budget)) {
-            // check if this is parent or new parent or new cateogry with new parent etc
 
-            /* If this is parent category*/
-            if (budget.getCategory().get().getParent() == null) {
-                // TODO /* Chceck if this is new c*/
-                parentPlanTable.getItems().addAll(budget);
-            } else {
-                planTable.getItems().add(budget);
-                parentPlanTable.getItems().add(appController.getBudgetForCategory(budget.getCategory().get().getParent()));
-            }
-            generalBud.setPlanned(generalBud.getPlanned().get().add(budget.getPlanned().get()));    // bardzo brzydko
+            appController.addBudget(budget);
         }
 
         updateControls();
     }
 
+    @FXML
+    private void handleAddCategoryAction() {
+        Category category = new Category();
+        if (appController.showAddCategoryDialog(category)) {
+            appController.addParentCategory(category);
+        } else {
+            appController.addSubcategory(category);
+        }
+
+        updateControls();
+    }
+
+
     public void setAppController(BudgetAppController appController) {
         this.appController = appController;
     }
 
-    public void setData(List<Category> parentPlanned) { // List of
-//        this.data = parentPlanned;
-        parentPlanTable.setItems(FXCollections.observableArrayList(parentPlanned.stream().map(x -> {
+    public void setData(List<Category> parentPlanned, List<Budget> data) { // List of
+        this.data = data;
+
+        updateParentPlanTable(parentPlanned);
+
+        /* Take first's subcategories - */  //
+        List<Budget> a = appController.getSubcategoriesBudgets(parentPlanned.get(0));
+        if (a != null) {
+            planTable.setItems(FXCollections.observableArrayList(a));
+        }
+
+    }
+
+    public void updateControls() {
+        updateParentPlanTable(appController.getParentCategories());
+        generalBalance.setText(generalBud.getBalance().get().toString());
+        generalBudget.setText(generalBud.getPlanned().get().toString());
+        planTable.getColumns().get(0).setVisible(false);
+        planTable.getColumns().get(0).setVisible(true);
+    }
+
+    public void updateParentPlanTable(List<Category> categories) {
+        parentPlanTable.setItems(FXCollections.observableArrayList(categories.stream().map(x -> {
             Budget o = appController.getBudgetForCategory(x);
             if (o != null) {
                 return o;
@@ -187,23 +211,10 @@ public class BudgetOverviewController {
             o = new Budget(new BigDecimal(0));
             o.setCategory(x);
             o.setSpent(appController.getTotalSpentPerCategory(x));
+            o.setPlanned(appController.getTotalPlanPerCategory(x));
+            appController.addBudget(o);
             return o;
         }).collect(Collectors.toList())));
-
-
-        /* Take first's subcategories - */  //
-        List<Budget> a = appController.getSubcategoriesBudgets(parentPlanned.get(0));
-        if (a != null) {
-                planTable.setItems(FXCollections.observableArrayList(a));
-        }
-
-    }
-
-    public void updateControls() {
-        generalBalance.setText(generalBud.getBalance().get().toString());
-        generalBudget.setText(generalBud.getPlanned().get().toString());
-        planTable.getColumns().get(0).setVisible(false);
-        planTable.getColumns().get(0).setVisible(true);
     }
 
 /*
