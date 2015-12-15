@@ -69,10 +69,10 @@ public class BudgetAppController {
             controller.setAppController(this);
             controller.setData(parentCategories, data);
 
-            int total = data.stream().mapToInt(budget -> budget.getPlanned().get().intValue()).sum();
+            int total = parentCategories.stream().map(this::getBudgetForCategory).mapToInt(budget -> budget.getPlanned().get().intValue()).sum();
             generalBudget.setPlanned(new BigDecimal(total));
 
-            controller.setGeneralBud(generalBudget);
+            controller.setGeneralPla(generalBudget);
 
             controller.setAppController(this);
 
@@ -148,7 +148,9 @@ public class BudgetAppController {
         }
     }
 
-
+    public void removeBudget(Budget budget) {
+        this.data.remove(budget);
+    }
 
     /*Później w BudgetAppControlerze chciałbym taką metodę która dostaje na wejściu mapę categorii i ile zostało wydane lub przypływu a zwraca listę budzetów
     Wejściem dla niej będzie to co dostaniemy od wydatków i przerobi to na nasze budżety

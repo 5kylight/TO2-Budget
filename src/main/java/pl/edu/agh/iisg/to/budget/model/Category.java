@@ -30,6 +30,11 @@ public class Category {
         }
     }
 
+    public void removeSubcategory(Category category) {
+        subCategories.remove(category);
+    }
+
+
     public StringProperty getName() {
         return name;
     }

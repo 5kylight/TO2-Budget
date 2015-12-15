@@ -110,29 +110,62 @@ public class BudgetEditDialogController {
         DecimalFormat decimalFormatter = new DecimalFormat();
         decimalFormatter.setParseBigDecimal(true);
 
-        if (categoryComboBox.getValue() == null ) {
-            /* Adding parent category */
-            if (parentCategoryComboBox.getValue() == null)
-                logger.error("Cannot add parent category, please specify parent category");
-            budget.setCategory(parentCategoryComboBox.getValue());
-        } else {
-            /* Adding subcategory*/
-
-                budget.setCategory(categoryComboBox.getValue());
-                try {
-                    budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                Category parent = parentCategoryComboBox.getValue();
-
-                if (parent != null) {
-                    parent.addSubCategories(budget.getCategory().get());
-                    budget.getCategory().get().setParent(parent);
-                } else {
-                    logger.error("Category must have a parent");
-                }
+        if (budget.getCategory() != null) {
+            budget.getCategory().get().getParent().removeSubcategory(budget.getCategory().get());
         }
+
+        if (categoryComboBox.getValue() == null || parentCategoryComboBox.getValue() == null )
+            logger.error("Not both categories selected");
+
+
+        budget.setCategory(categoryComboBox.getValue());
+        budget.getCategory().get().setParent(parentCategoryComboBox.getValue());
+        budget.getCategory().get().getParent().addSubCategories(budget.getCategory().get());
+        try {
+            budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
+        } catch (ParseException e) {
+            logger.error(e);
+            e.printStackTrace();
+        }
+
+
+
+//
+//        /* Remember old parent category */
+//        Category oldParentCategory = null;
+//        if (budget.getCategory() != null)
+//            oldParentCategory = budget.getCategory().get().getParent();
+//
+//        if (categoryComboBox.getValue() == null ) {
+//            /* Adding parent category */
+//            if (parentCategoryComboBox.getValue() == null)
+//                logger.error("Cannot add parent category, please specify parent category");
+//            budget.setCategory(parentCategoryComboBox.getValue());
+//        } else {
+//            /* Adding subcategory*/
+//
+//                budget.setCategory(categoryComboBox.getValue());
+//                try {
+//                    budget.setPlanned((BigDecimal) decimalFormatter.parse(planTextField.getText()));
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//                Category newParentCategory = parentCategoryComboBox.getValue();
+//
+//                if (newParentCategory != null) {
+//                    if (newParentCategory.equals(oldParentCategory)) {
+//                        Budget parentBudget = appController.getBudgetForCategory(newParentCategory);
+//                        parentBudget
+//
+//                    } else {
+//                        newParentCategory.addSubCategories(budget.getCategory().get());
+//                        budget.getCategory().get().setParent(newParentCategory);
+//                    }
+//
+//                } else {
+//                    logger.error("Category must have a parent");
+//                }
+//        }
     }
 
     private void updateControls() {

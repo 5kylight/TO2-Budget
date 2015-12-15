@@ -65,7 +65,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </VBox.margin>
                 </Button>
-                <Button fx:id="addButton" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddAction" text="Add">
+                <Button fx:id="addButton" alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAddAction" text="Add Plan">
                     <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </VBox.margin>
@@ -106,7 +106,7 @@
                                 <Insets bottom="0.0" left="5.0" right="5.0" top="5.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label text="General Budget" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label text="General Plan" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets bottom="0.0" left="5.0" right="5.0" top="5.0" />
                             </GridPane.margin>
@@ -118,7 +118,7 @@
                                 <Insets bottom="0.0" left="5.0" right="5.0" top="5.0" />
                             </GridPane.margin>
                         </Label>
-                        <Label fx:id="generalBudget"  GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <Label fx:id="generalPlan"  GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets bottom="0.0" left="5.0" right="5.0" top="5.0" />
                             </GridPane.margin>
