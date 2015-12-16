@@ -21,13 +21,22 @@ public class Category {
     }
 
     public void addSubCategories(List<ObjectProperty<Category>> subCategories) {
-        this.subCategories.addAll(subCategories);
+        if (this.isParent()) {
+            this.subCategories.addAll(subCategories);
+        } else {
+            throw new IllegalStateException("");
+        }
     }
 
-    public void addSubCategories(Category ... categories) {
-        for(Category category : categories) {
-            this.subCategories.add(new SimpleObjectProperty<>(category));
+    public void addSubCategories(Category... categories) {
+        if (this.isParent()) {
+            for (Category category : categories) {
+                this.subCategories.add(new SimpleObjectProperty<>(category));
+            }
+        } else {
+            throw new IllegalStateException("");
         }
+
     }
 
     public void removeSubcategory(Category category) {
@@ -42,6 +51,38 @@ public class Category {
     public Category setName(String name) {
         this.name = new SimpleStringProperty(name);
         return this;
+    }
+
+    public Category getParent() {
+        if (parentCategory != null)
+            return parentCategory.get();
+        return null;
+    }
+
+    public Category setParent(Category parent) {
+        this.parentCategory = new SimpleObjectProperty<>(parent);
+        return this;
+    }
+
+    public boolean isParent() {
+        if (this.getParent() == null)
+            return true;
+        return false;
+    }
+
+    //TODO: nie wiem czy potrzeba
+    public boolean isNewCategory() {
+        if (this.getParent() == null && !this.hasSubcategories()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasSubcategories() {
+        if (this.subCategories.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -63,24 +104,6 @@ public class Category {
         int result = name.hashCode();
         result = 31 * result + (parentCategory != null ? parentCategory.hashCode() : 0);
         return result;
-    }
-
-    public Category getParent() {
-        if (parentCategory != null)
-            return parentCategory.get();
-        return null;
-    }
-
-
-    public Category setParent(Category parent) {
-        this.parentCategory = new SimpleObjectProperty<>(parent);
-        return this;
-    }
-
-    public boolean isParent(){
-        if(this.getParent()==null)
-            return true;
-        return false;
     }
 
     @Override

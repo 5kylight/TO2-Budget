@@ -67,10 +67,6 @@ public class Budget {
         return this.balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance.set(balance);
-    }
-
 
     /* dla danego bud�etu dosta� sumaryczny bilans - czyli jak jaki� bilans ma podkategorie to ten bilans musi sumowa� wszystkie podkategorie
     Czyli taki bilans razem z podkategoriami Emotikon smile

@@ -5,16 +5,25 @@ import pl.edu.agh.iisg.to.budget.model.Budget;
 import pl.edu.agh.iisg.to.budget.model.Category;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by tom on 16.12.15.
  */
-public class BudgetManager {
+public class BudgetManager implements IBudget{
+
+    @Override
+    public Map<Category, BigDecimal> getPlannedAmmountsPerCategory() {
+        Map<Category, BigDecimal> plannedBudgetsMap = new HashMap<>();
+        for(Budget b : data){
+            if(!b.getCategory().get().isParent()){
+                plannedBudgetsMap.put(b.getCategory().get(), b.getPlanned().get());
+            }
+        }
+        return plannedBudgetsMap;
+    }
+
     private List<Budget> data;
     private Budget generalBudget;
     private List<Category> subcategories;  // tymczasowo
